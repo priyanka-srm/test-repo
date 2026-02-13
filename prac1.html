@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Student Registration Form</title>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Institute Logo" width="100">
+        <h1>Student Registration Portal</h1>
+    </header>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Courses</a>
+        <a href="#">Contact</a>
+    </nav>
+    <main>
+        <article>
+            <h2>Student Registration Form</h2>
+            <h3>Personal Information</h3>
+            <form action="Submit.html" method="POST">
+                <div class="input-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required minlength="3">
+                </div>
+                <div class="input-group">
+                    <label for="age">Age *</label>
+                    <input type="number" id="age" name="age" placeholder="Enter your age" min="18" max="60" required>
+                </div>
+                <div class="input-group">
+                    <label>Gender *</label>
+                    <input type="radio" id="male" name="gender" value="male" required>
+                    <label for="male">Male</label>
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">Female</label>
+                </div>
+                <h3>Course Selection</h3>
+                <div class="input-group">
+                    <label for="course">Select Course *</label>
+                    <select id="course" name="course" required>
+                        <option value="" disabled selected>Select your course</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="resume">Upload Resume *</label>
+                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                </div>
+                <div class="input-group">
+                    <button type="submit">Register</button>
+                </div>
+            </form>
+        </article>
+        <aside>
+            <h3>Tips for Students</h3>
+            <p>Make sure all required fields (*) are filled correctly. Age must be between 18 and 60.</p>
+        </aside>
+    </main>
+    <footer>
+        <p>© 2026 My Institute. All rights reserved.</p>
+    </footer>
+</body>
+</html>
