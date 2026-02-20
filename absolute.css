@@ -1,0 +1,14 @@
+.container {
+    width: 400px;
+    height: 250px;
+    background-color: lightgray;
+    position: relative;   /* IMPORTANT */
+}
+.box {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
