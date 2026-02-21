@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layered Cards</title>
+    <style>
+        body{
+            font-family: 'Times New Roman', Times, serif;
+            background-color: lightgrey;
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+            height: 100vh;
+        }
+        .cards-container{
+            position: relative;
+            width: 400px;
+            height: 250px;
+        }
+        .card {
+            position: absolute;
+            width: 250px;
+            height: 150px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .card:nth-child(1) { top: 0px; left: 0px; z-index: 1;}
+        .card:nth-child(2) { top: 20px; left: 20px; z-index: 2;}
+        .card:nth-child(3) { top: 40px; left: 40px; z-index: 3;}
+        .badge{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-weight: bold;
+        }
+        .card:hover{
+            z-index: 10;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+    </style>    
+</head>
+<body>
+    <div class="cards-container">
+        <div class="card">
+            <div class="badge">$30</div>
+            <h3>Product 1</h3>
+            <p>Basic features</p>
+        </div>
+        <div class="card">
+            <div class="badge">$50</div>
+            <h3>Product 2</h3>
+            <p>Popular choice</p>
+        </div>
+        <div class="card">
+            <div class="badge">$70</div>
+            <h3>Product 3</h3>
+            <p>Premium</p>
+        </div>
+    </div>
+</body>
+</html>
