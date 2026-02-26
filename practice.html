@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>practice</title>
+    <style>
+        .box{
+            width: 300px;
+            height: 300px;
+            background-color: lightgray;
+            margin: 30px;
+            padding: 30px;
+            border: 3px solid black;
+            border-radius: 10px;
+            box-shadow: 0px -10px 20px rgba(0,0,0,0.5);
+            position: relative;
+            top: 30px;
+            left: 50px;
+        }
+        .box1{
+            width: 100px;
+            height: 100px;
+            background-color: coral;
+            bottom: 0px;
+            left: 0px;  
+            position: absolute;
+        }
+        .card{
+            width: 250px;
+            height: 100px;
+            background-color: white;
+            border: 2px solid black;
+            position: relative;
+        }
+        .badge{
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            border-radius: 50%;
+            top: 0px;
+            left: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+        .button{
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="box">hello css
+        <div class="box1"></div>
+    </div>
+    <div class="card">
+        <div class="badge"></div>
+    </div>
+    <button class="button">click</button>
+</body>
+</html>
