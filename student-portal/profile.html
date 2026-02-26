@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Card</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f4f4;
+  font-family: Arial, sans-serif;
+  transition: 0.3s;
+  position: relative;
+}
+.card {
+  background: white;
+  padding: 2rem;
+  width: 320px;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+.card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+.card h2 {
+  font-size: clamp(1.4rem, 4vw, 1.9rem);
+  margin-bottom: 0.5rem;
+}
+.bio {
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  margin-bottom: 1rem;
+  color: #555;
+}
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.socials a {
+  text-decoration: none;
+  color: #007bff;
+  transition: 0.3s;
+}
+.socials a:hover {
+  color: #0056b3;
+}
+button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 20px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+#dark-toggle {
+  display: none;
+}
+.toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+#dark-toggle:checked + .wrapper {
+  background: #121212;
+}
+#dark-toggle:checked + .wrapper .card {
+  background: #1e1e1e;
+  color: white;
+}
+#dark-toggle:checked + .wrapper .bio {
+  color: #ccc;
+}
+</style>
+</head>
+<body>
+<input type="checkbox" id="dark-toggle">
+<div class="wrapper">
+<label for="dark-toggle" class="toggle"></label>
+<div class="card">
+  <img src="img/Priyanka.jpeg" alt="Priyanka">
+  <h2>Priyanka S</h2>
+  <p class="bio">
+    Frontend Developer passionate about building responsive and clean UI designs.
+  </p>
+  <div class="socials">
+    <a href="#">Instagram</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">GitHub</a>
+  </div>
+  <button>Follow</button>
+</div>
+</div>
+</body>
+</html>
