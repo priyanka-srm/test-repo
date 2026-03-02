@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super League 2026</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+    scroll-behavior:smooth;
+}
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+}
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 10%;
+    background:rgba(0,0,0,0.6);
+    position:sticky;
+    top:0;
+}
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+.nav-links{
+    list-style:none;
+    display:flex;
+    gap:30px;
+}
+.nav-links a{
+    text-decoration:none;
+    color:white;
+    transition:0.3s;
+}
+.nav-links a:hover{
+    color:#00e6e6;
+}
+.hero{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:0 20px;
+}
+.hero h1{
+    font-size:55px;
+    margin-bottom:20px;
+}
+.hero p{
+    font-size:18px;
+    margin-bottom:35px;
+}
+.btn{
+    padding:12px 30px;
+    background:#00e6e6;
+    color:black;
+    text-decoration:none;
+    border-radius:30px;
+    font-weight:bold;
+    transition:0.3s;
+}
+.btn:hover{
+    background:white;
+    transform:translateY(-5px);
+}
+.section{
+    padding:80px 10%;
+    text-align:center;
+}
+.alt{
+    background:rgba(255,255,255,0.1);
+}
+.card-container{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:30px;
+    margin-top:40px;
+}
+.card{
+    background:rgba(255,255,255,0.15);
+    padding:30px;
+    border-radius:15px;
+    width:220px;
+    transition:0.3s;
+    font-weight:bold;
+}
+.card:hover{
+    transform:translateY(-10px);
+    background:rgba(255,255,255,0.25);
+}
+.schedule{
+    margin-top:30px;
+    line-height:2;
+}
+table{
+    width:80%;
+    margin:40px auto;
+    border-collapse:collapse;
+}
+th, td{
+    padding:12px;
+    border:1px solid white;
+}
+th{
+    background:#00e6e6;
+    color:black;
+}
+footer{
+    text-align:center;
+    padding:25px;
+    background:black;
+    margin-top:50px;
+}
+@media(max-width:768px){
+    .navbar{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .hero h1{
+        font-size:35px;
+    }
+
+    table{
+        width:100%;
+    }
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo">Super League 2026</div>
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#teams">Teams</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#points">Points</a></li>
+    </ul>
+</nav>
+<section class="hero" id="home">
+    <div>
+        <h1>Cricket Tournament 2026</h1>
+        <p>Experience the thrill of competitive cricket like never before!</p>
+        <a href="#teams" class="btn">Explore Teams</a>
+    </div>
+</section>
+<section class="section" id="teams">
+    <h2>Participating Teams</h2>
+    <div class="card-container">
+        <div class="card">Chennai Warriors</div>
+        <div class="card">Mumbai Strikers</div>
+        <div class="card">Delhi Titans</div>
+        <div class="card">Bangalore Kings</div>
+    </div>
+</section>
+<section class="section alt" id="schedule">
+    <h2>Match Schedule</h2>
+    <div class="schedule">
+        <p><strong>Match 1:</strong> Chennai vs Mumbai</p>
+        <p><strong>Match 2:</strong> Delhi vs Bangalore</p>
+        <p><strong>Final:</strong> Winner 1 vs Winner 2</p>
+    </div>
+</section>
+<section class="section" id="points">
+    <h2>Points Table</h2>
+    <table>
+        <tr>
+            <th>Team</th>
+            <th>Matches</th>
+            <th>Points</th>
+        </tr>
+        <tr>
+            <td>Chennai</td>
+            <td>3</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td>Mumbai</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+    </table>
+</section>
+<footer>
+    <p>© 2026 Super League | All Rights Reserved</p>
+</footer>
+</body>
+</html>

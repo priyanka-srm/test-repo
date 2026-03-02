@@ -8,14 +8,24 @@
     <link rel="stylesheet" href="../css/portfolio.css">
 </head>
 <body>
-    <section class="hero">
+    <nav class="navbar">
+        <div class="logo">Priyanka S</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#tools">Tools</a></li>
+            <li><a href="#projects">Projects</a></li>
+        </ul>
+    </nav>
+    <section id="home" class="hero">
         <div class="hero-content">
             <h1>Priyanka S</h1>
-            <p>I build clean and responsive web interfaces using HTM and CSS.</p>
+            <p>I build clean and responsive web interfaces using HTML and CSS.</p>
             <a href="#projects" class="button">View Projects</a>
         </div>
     </section>
-    <section class="about">
+    <section id="about" class="about">
         <h2>About Me</h2>
         <p>
             I am a passionate Frontend Developer with Strong Knowledge in HTML and CSS.
@@ -23,43 +33,66 @@
         </p>
         <h3>Education</h3>
         <p>
-            B.E Electronics and Instrumentation Engineering.
+            B.E Electronics and Instrumentation Engineering.(2021 - 2025)
         </p>
-        <p>2021 - 2025</p>
     </section>
-    <section class="skills">
+    <section id="skills" class="skills">
         <h2>Skills</h2>
-        <div class="skill-container">
-            <div class="skill-box">
-                <img src="../img/html.jpeg" alt="HTML">
-                <p>HTML</p>
-            </div>
-            <div class="skill-box">
-                <img src="../img/css.jpeg" alt="css">
-                <p>CSS</p>
-            </div>
-            <div class="skill-box">
-                <img src="../img/responsive.jpeg" alt="Responsive Design">
-                <p>Responsive Design</p>
+        <div class="card skill-card">
+            <div class="inner-grid">
+                <div class="skill">
+                    <img src="../img/html.jpeg">
+                    <p>HTML</p>
+                </div>
+                <div class="skill">
+                    <img src="../img/css.jpeg">
+                    <p>CSS</p>
+                </div>
+                <div class="skill">
+                    <img src="../img/responsive.jpeg">
+                    <p>Responsive Design</p>
+                </div>
             </div>
         </div>
     </section>
-    <section class="tools">
+    <section id="tools" class="tools">
         <h2>Tools</h2>
-        <div class="skill-container">
-            <div class="skill-box">
-                <img src="../img/git.jpeg" alt="Git">
-                <p>Git</p>
-            </div>
-            <div class="skill-box">
-                <img src="../img/github.jpeg" alt="GitHub">
-                <p>GitHub</p>
-            </div>
-            <div class="skill-box">
-                <img src="../img/vscode.jpeg" alt="Vs Code">
-                <p>Vs Code</p>
+        <div class=" card skill-card">
+            <div class="inner-grid">
+                <div class="skill">
+                    <img src="../img/git.jpeg">
+                    <p>Git</p>
+                </div>
+                <div class="skill">
+                    <img src="../img/github.jpeg">
+                    <p>GitHub</p>
+                </div>
+                 <div class="skill">
+                    <img src="../img/vscode.jpeg">
+                    <p>Vs Code</p>
+                </div>
             </div>
         </div>
     </section>
+    <section id="projects" class="projects">
+        <h2>Projects</h2>
+        <div class="project-grid">
+            <div class="card">
+                <h3>Landing Page</h3>
+                <p>Responsive landing page using Flexbox & Grid.</p>
+            </div>
+            <div class="card">
+                <h3>Cricket Tournament Page</h3>
+                <p>Positioning & responsive practice project.</p>
+            </div>
+            <div class="card">
+                <h3>Portfolio Template</h3>
+                <p>Modern portfolio design using only HTML & CSS.</p>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>© 2026 Priyanka S. All Rights Reserved.</p>
+    </footer>
 </body>
 </html>
