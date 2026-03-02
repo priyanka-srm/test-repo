@@ -1,7 +1,5 @@
-
 window.addEventListener("load", revealSections);
 window.addEventListener("scroll", revealSections);
-
 function revealSections() {
     const reveals = document.querySelectorAll(".reveal");
 
