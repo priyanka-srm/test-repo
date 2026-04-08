@@ -15,3 +15,6 @@ resetBtn.addEventListener("click", function(){
     count = 0;
     countValue.textContent = count;
 });
+
+
+
