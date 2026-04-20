@@ -7,12 +7,15 @@
 </head>
 <body>
 <header>
-  <h1>🎬 Movie Explorer</h1>
-  <input type="text" id="search" placeholder="Search movies...">
+  <h1>🎬 Smart Movie Explorer</h1>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search movies...">
+    <button id="searchBtn">Search</button>
+  </div>
 </header>
-<section id="movies"></section>
+<section id="moviesContainer"></section>
 <!-- Popup -->
-<div id="popup" class="hidden">
+<div id="popup">
   <div class="popup-content">
     <span id="close">✖</span>
     <img id="popup-img">
