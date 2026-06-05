@@ -1,4 +1,5 @@
-const API_KEY = "8793cc0e"; // my key
+const API_KEY = "8793cc0e";
+/* Elements */
 const searchBtn = document.getElementById("searchBtn");
 const searchInput = document.getElementById("searchInput");
 const moviesContainer = document.getElementById("moviesContainer");
@@ -7,73 +8,101 @@ const popupImg = document.getElementById("popup-img");
 const popupTitle = document.getElementById("popup-title");
 const popupDesc = document.getElementById("popup-desc");
 const closeBtn = document.getElementById("close");
-/* Load default movies */
+const themeToggle = document.getElementById("themeToggle");
+/* Load Default Movies */
 window.onload = () => {
   loadDefaultMovies();
 };
 /* Events */
 searchBtn.addEventListener("click", searchMovies);
 searchInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") searchMovies();
+  if (e.key === "Enter") {
+    searchMovies();
+  }
 });
-/* Load default */
+/* Theme Toggle */
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+});
+/* Load Default Movies */
 async function loadDefaultMovies() {
-  moviesContainer.innerHTML = "<p class='loader'>Loading movies...</p>";
+  moviesContainer.innerHTML =
+    "<p class='loader'>Loading movies...</p>";
   try {
-    const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=avengers`);
+    const res = await fetch(
+      `https://www.omdbapi.com/?apikey=${API_KEY}&s=avengers`
+    );
     const data = await res.json();
     if (data.Response === "True") {
       displayMovies(data.Search);
     } else {
-      moviesContainer.innerHTML = `<p>${data.Error}</p>`;
+      moviesContainer.innerHTML =
+        `<p>${data.Error}</p>`;
     }
   } catch {
-    moviesContainer.innerHTML = "<p>Error loading data</p>";
+    moviesContainer.innerHTML =
+      "<p>Error loading data</p>";
   }
 }
-/* Search */
+/* Search Movies */
 async function searchMovies() {
   const query = searchInput.value.trim();
   if (!query) {
     alert("Enter movie name");
     return;
   }
-  moviesContainer.innerHTML = "<p class='loader'>Searching...</p>";
+  moviesContainer.innerHTML =
+    "<p class='loader'>Searching...</p>";
   try {
-    const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`);
+    const res = await fetch(
+      `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+    );
     const data = await res.json();
     if (data.Response === "True") {
       displayMovies(data.Search);
     } else {
-      moviesContainer.innerHTML = `<p>${data.Error}</p>`;
+      moviesContainer.innerHTML = `
+        <div class="noResults">
+          😢 No movies found
+        </div>
+      `;
     }
   } catch {
-    moviesContainer.innerHTML = "<p>Error fetching data</p>";
+    moviesContainer.innerHTML =
+      "<p>Error fetching data</p>";
   }
 }
-/* Display */
+/* Display Movies */
 function displayMovies(movies) {
   moviesContainer.innerHTML = "";
-  movies.forEach(movie => {
-    const poster = movie.Poster !== "N/A"
-      ? movie.Poster
-      : "https://via.placeholder.com/300x450";
+  movies.forEach((movie) => {
+    const poster =
+      movie.Poster !== "N/A"
+        ? movie.Poster
+        : "https://via.placeholder.com/300x450";
     const card = document.createElement("div");
     card.classList.add("movieCard");
     card.innerHTML = `
       <img src="${poster}">
       <div class="movieInfo">
         <h3>${movie.Title}</h3>
+        <button class="favBtn">
+          ❤️ Favorite
+        </button>
       </div>
     `;
-    card.addEventListener("click", () => showDetails(movie.imdbID));
+    card.addEventListener("click", () => {
+      showDetails(movie.imdbID);
+    });
     moviesContainer.appendChild(card);
   });
 }
-/* Details */
+/* Show Details */
 async function showDetails(id) {
   try {
-    const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`);
+    const res = await fetch(
+      `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`
+    );
     const movie = await res.json();
     popupImg.src = movie.Poster;
     popupTitle.innerText = movie.Title;
@@ -83,11 +112,11 @@ async function showDetails(id) {
     alert("Error loading details");
   }
 }
-/* Close popup */
+/* Close Popup */
 closeBtn.addEventListener("click", () => {
   popup.style.display = "none";
 });
-/* Click outside */
+/* Click Outside Popup */
 popup.addEventListener("click", (e) => {
   if (e.target === popup) {
     popup.style.display = "none";

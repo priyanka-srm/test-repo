@@ -1,0 +1,185 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  color: #333;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+body.dark {
+  background: #121212;
+  color: white;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 2rem;
+}
+
+#themeBtn {
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.1);
+}
+
+.dark .card {
+  background: #1f1f1f;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.form-section {
+  display: grid;
+  grid-template-columns:
+    2fr 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-section input,
+.form-section select,
+.form-section button,
+.search-filter input,
+.search-filter select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form-section button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.search-filter {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+#todoList {
+  list-style: none;
+}
+
+.todo-item {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.1);
+}
+
+.dark .todo-item {
+  background: #1f1f1f;
+}
+
+.todo-left {
+  flex: 1;
+}
+
+.todo-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.completed .todo-title {
+  text-decoration: line-through;
+  opacity: .6;
+}
+
+.todo-meta {
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.priority-high {
+  color: red;
+}
+
+.priority-medium {
+  color: orange;
+}
+
+.priority-low {
+  color: green;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.complete-btn {
+  background: green;
+  color: white;
+}
+
+.edit-btn {
+  background: orange;
+  color: white;
+}
+
+.delete-btn {
+  background: crimson;
+  color: white;
+}
+
+#emptyState {
+  text-align: center;
+  font-size: 22px;
+  margin-top: 40px;
+  display: none;
+}
