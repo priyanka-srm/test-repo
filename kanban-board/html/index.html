@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Kanban Board</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <h1>Advanced Kanban Board</h1>
+
+    <button id="themeToggle">
+      🌙 Dark Mode
+    </button>
+  </header>
+
+  <!-- Task Form -->
+
+  <section class="task-form-section">
+
+    <form id="taskForm">
+
+      <input
+        type="text"
+        id="taskTitle"
+        placeholder="Enter task title"
+        required
+      >
+
+      <select id="taskPriority">
+
+        <option value="High">
+          High Priority
+        </option>
+
+        <option value="Medium">
+          Medium Priority
+        </option>
+
+        <option value="Low">
+          Low Priority
+        </option>
+
+      </select>
+
+      <input
+        type="date"
+        id="taskDueDate"
+        required
+      >
+
+      <button type="submit">
+        Add Task
+      </button>
+
+    </form>
+
+  </section>
+
+  <!-- Search -->
+
+  <section class="search-section">
+
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search tasks..."
+    >
+
+  </section>
+
+  <!-- Statistics -->
+
+  <section class="stats-container">
+
+    <div class="stat-card">
+      <h3>Total</h3>
+      <p id="totalTasks">0</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>To Do</h3>
+      <p id="todoCount">0</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>In Progress</h3>
+      <p id="progressCount">0</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Done</h3>
+      <p id="doneCount">0</p>
+    </div>
+
+  </section>
+
+  <!-- Kanban Board -->
+
+  <main class="board">
+
+    <!-- TODO -->
+
+    <section
+      class="column"
+      data-status="todo"
+    >
+
+      <h2>📌 To Do</h2>
+
+      <div
+        id="todoColumn"
+        class="task-container"
+      >
+
+        <div class="empty-state">
+          No Tasks Yet
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- IN PROGRESS -->
+
+    <section
+      class="column"
+      data-status="progress"
+    >
+
+      <h2>⚡ In Progress</h2>
+
+      <div
+        id="progressColumn"
+        class="task-container"
+      >
+
+        <div class="empty-state">
+          No Tasks Yet
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- DONE -->
+
+    <section
+      class="column"
+      data-status="done"
+    >
+
+      <h2>✅ Done</h2>
+
+      <div
+        id="doneColumn"
+        class="task-container"
+      >
+
+        <div class="empty-state">
+          No Tasks Yet
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Edit Modal -->
+
+  <div
+    id="editModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-content">
+
+      <h2>Edit Task</h2>
+
+      <input
+        type="text"
+        id="editTitle"
+      >
+
+      <select id="editPriority">
+
+        <option value="High">
+          High Priority
+        </option>
+
+        <option value="Medium">
+          Medium Priority
+        </option>
+
+        <option value="Low">
+          Low Priority
+        </option>
+
+      </select>
+
+      <input
+        type="date"
+        id="editDueDate"
+      >
+
+      <div class="modal-buttons">
+
+        <button id="saveEdit">
+          Save
+        </button>
+
+        <button id="cancelEdit">
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="../js/script.js"></script>
+
+</body>
+</html>
