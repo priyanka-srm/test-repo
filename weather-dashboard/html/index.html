@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+  <title>
+    Advanced Weather Dashboard
+  </title>
+  <link
+    rel="stylesheet"
+    href="../css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>
+      🌤️ Weather Dashboard
+    </h1>
+    <button
+      id="themeToggle"
+      class="theme-btn"
+    >
+      🌙 Dark Mode
+    </button>
+  </header>
+  <!-- Search Section -->
+  <section class="search-section">
+    <form id="searchForm">
+      <input
+        type="text"
+        id="cityInput"
+        placeholder="Enter city name..."
+        autocomplete="off"
+        required
+      >
+      <button type="submit">
+        Search
+      </button>
+    </form>
+    <button
+      id="retryBtn"
+      class="retry-btn hidden"
+    >
+      Retry
+    </button>
+  </section>
+  <!-- States Container -->
+  <main class="main-container">
+    <!-- Empty State -->
+    <section
+      id="emptyState"
+      class="state-card"
+    >
+      <h2>
+        🌍 Search a City
+      </h2>
+      <p>
+        Enter a city name to view weather information.
+      </p>
+    </section>
+    <!-- Loading State -->
+    <section
+      id="loadingState"
+      class="state-card hidden"
+    >
+      <div class="loader"></div>
+      <h2>
+        Loading Weather...
+      </h2>
+    </section>
+    <!-- Error State -->
+    <section
+      id="errorState"
+      class="state-card hidden"
+    >
+      <h2>
+        ❌ Something Went Wrong
+      </h2>
+      <p id="errorMessage">
+        Unable to fetch weather data.
+      </p>
+    </section>
+    <!-- Weather State -->
+    <section
+      id="weatherContainer"
+      class="weather-container hidden"
+    >
+      <!-- Current Weather -->
+      <div class="weather-card">
+        <h2 id="cityName">
+          City Name
+        </h2>
+        <img
+          id="weatherIcon"
+          src=""
+          alt="Weather Icon"
+        >
+        <p
+          id="weatherDescription"
+          class="description"
+        >
+          Weather Description
+        </p>
+        <div class="temperature">
+          <span id="temperature">
+            0
+          </span>
+          °C
+        </div>
+      </div>
+      <!-- Weather Details -->
+      <div class="details-grid">
+        <div class="detail-card">
+          <h3>
+            💧 Humidity
+          </h3>
+          <p id="humidity">
+            0%
+          </p>
+        </div>
+        <div class="detail-card">
+          <h3>
+            🌬️ Wind Speed
+          </h3>
+          <p id="windSpeed">
+            0 km/h
+          </p>
+        </div>
+        <div class="detail-card">
+          <h3>
+            🌡️ Feels Like
+          </h3>
+          <p id="feelsLike">
+            0°C
+          </p>
+        </div>
+        <div class="detail-card">
+          <h3>
+            ☁️ Cloudiness
+          </h3>
+          <p id="cloudiness">
+            0%
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Recent Searches -->
+  <section class="recent-searches">
+    <h2>
+      Recent Searches
+    </h2>
+    <div
+      id="recentSearches"
+      class="recent-list"
+    >
+      <div class="empty-recent">
+        No Recent Searches
+      </div>
+    </div>
+  </section>
+  <script src="../js/script.js"></script>
+</body>
+</html>
