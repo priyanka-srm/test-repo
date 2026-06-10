@@ -1,571 +1,257 @@
-# Phase 6 — Weather Dashboard
+# 🌤️ Advanced Weather Dashboard
+
+A modern, responsive Weather Dashboard web application built using **HTML**, **CSS**, and **JavaScript (ES6+)**.  
+This project fetches real-time weather data from the **OpenWeatherMap API** and displays it with a clean UI, dark mode support, and recent search history — all without any frameworks.
 
 ---
 
-# Project Overview
+## 🚀 Live Features
 
-The Weather Dashboard is a frontend application built using Asynchronous JavaScript concepts.
-
-The application allows users to search weather information for any city and displays:
-
-- Current Weather
-- Temperature
-- Humidity
-- Wind Speed
-- Weather Condition
-- Loading State
-- Error State
-
-The project demonstrates real-world API integration using Fetch API, Promises, Async/Await, and Error Handling.
-
----
-
-# Features
-
-✅ Search Weather By City
-
-✅ Fetch Data From Weather API
-
-✅ Async/Await Implementation
-
-✅ Promise-Based API Requests
-
-✅ Loading State Handling
-
-✅ Error State Handling
-
-✅ Empty State Handling
-
-✅ Responsive Design
-
-✅ Dark Mode Support
+| Feature | Description |
+|---|---|
+| 🔍 City Search | Search any city worldwide to get live weather |
+| 🌡️ Temperature | Displays current temperature in Celsius |
+| 💧 Humidity | Shows current humidity percentage |
+| 🌬️ Wind Speed | Displays wind speed in km/h |
+| 🌡️ Feels Like | Real-feel temperature |
+| ☁️ Cloudiness | Cloud coverage percentage |
+| 🕐 Recent Searches | Saves last 5 searched cities using localStorage |
+| 🌙 Dark Mode | Toggle dark/light theme with persistence |
+| ⚡ Loading State | Spinner shown while fetching data |
+| ❌ Error Handling | User-friendly error messages with retry option |
+| 📱 Responsive Design | Works on mobile, tablet, and desktop |
 
 ---
 
-# Technologies Used
+## 🧠 JavaScript Concepts Used
 
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- Fetch API
-- OpenWeather API
-- Local Storage API
+### 1. Classes & OOP
+
+The entire app is structured using ES6 Classes — `WeatherDashboard` handles all UI logic and `StorageManager` handles localStorage.
+
+```js
+class WeatherDashboard {
+  constructor() {
+    this.cityInput = document.getElementById("cityInput");
+    this.controller = null;
+    this.lastCity = "";
+    this.attachEvents();
+  }
+}
+```
 
 ---
 
-# Project Structure
+### 2. Async / Await + Fetch API
 
-```text
+Real-time weather data is fetched from OpenWeatherMap using `async/await` with proper error handling.
+
+```js
+async fetchWeather(city) {
+  const response = await fetch(url, { signal: this.controller.signal });
+  if (!response.ok) throw new Error("City not found");
+  const data = await response.json();
+  this.renderWeather(data);
+}
+```
+
+---
+
+### 3. AbortController (Request Cancellation)
+
+Prevents stale responses when a new search is triggered before the previous one completes.
+
+```js
+if (this.controller) this.controller.abort();
+this.controller = new AbortController();
+const response = await fetch(url, { signal: this.controller.signal });
+```
+
+---
+
+### 4. Try / Catch / Error Handling
+
+Gracefully handles network failures, invalid city names, and aborted requests.
+
+```js
+try {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("City not found");
+} catch (error) {
+  if (error.name === "AbortError") return;
+  this.showError(error.message);
+}
+```
+
+---
+
+### 5. localStorage (Static Class Methods)
+
+Theme preference and recent searches are saved to `localStorage` using a dedicated `StorageManager` class with static methods.
+
+```js
+class StorageManager {
+  static saveSearch(city) {
+    let searches = JSON.parse(localStorage.getItem("recentCities")) || [];
+    searches = searches.filter(c => c !== city);
+    searches.unshift(city);
+    if (searches.length > 5) searches.pop();
+    localStorage.setItem("recentCities", JSON.stringify(searches));
+  }
+}
+```
+
+---
+
+### 6. DOM Manipulation & Dynamic Rendering
+
+Weather data and recent search chips are rendered dynamically into the DOM.
+
+```js
+searches.forEach(city => {
+  const btn = document.createElement("button");
+  btn.className = "search-chip";
+  btn.textContent = city;
+  btn.addEventListener("click", () => this.fetchWeather(city));
+  this.recentSearches.appendChild(btn);
+});
+```
+
+---
+
+### 7. UI State Management
+
+A clean `showState()` method manages four UI states — `loading`, `error`, `weather`, and `empty` — by toggling CSS `hidden` classes.
+
+```js
+showState(state) {
+  ["loadingState", "errorState", "weatherContainer", "emptyState"]
+    .forEach(id => document.getElementById(id).classList.add("hidden"));
+
+  if (state === "loading") this.loadingState.classList.remove("hidden");
+  if (state === "error")   this.errorState.classList.remove("hidden");
+  if (state === "weather") this.weatherContainer.classList.remove("hidden");
+  if (state === "empty")   this.emptyState.classList.remove("hidden");
+}
+```
+
+---
+
+### 8. Dark Mode Toggle with Persistence
+
+Theme is toggled using `classList.toggle("dark")` on `body` and saved to localStorage so it persists on refresh.
+
+```js
+toggleTheme() {
+  document.body.classList.toggle("dark");
+  StorageManager.saveTheme(document.body.classList.contains("dark"));
+}
+```
+
+---
+
+### 9. Template Literals & Destructuring
+
+Used throughout for clean, readable DOM updates.
+
+```js
+document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
+document.getElementById("temperature").textContent = `${Math.round(data.main.temp)}°C`;
+```
+
+---
+
+## 🛠️ Technologies Used
+
+- **HTML5** — Semantic structure with proper sections and accessibility
+- **CSS3** — Flexbox, Grid, CSS transitions, dark mode, responsive media queries
+- **JavaScript ES6+** — Classes, async/await, fetch, AbortController, localStorage
+- **OpenWeatherMap API** — Live weather data source
+
+---
+
+## 📁 Project Structure
+
+```
 weather-dashboard/
 │
-├── index.html
-├── style.css
-├── script.js
-└── README.md
+├── index.html        → Main HTML structure
+├── css/
+│   └── style.css     → All styling including dark mode & responsive
+└── js/
+    └── script.js     → Full app logic (WeatherDashboard + StorageManager)
 ```
 
 ---
 
-# Phase 6 Concepts Used
+## ⚙️ How to Run
 
-# 1. Callback Pattern
-
-## Example
+1. Clone or download this repository
+2. Get a free API key from [openweathermap.org](https://openweathermap.org/api)
+3. Replace the API key in `script.js`:
 
 ```js
-function getData(callback) {
-
-  setTimeout(() => {
-
-    callback("Data Loaded");
-
-  }, 1000);
-
-}
-
-getData((data) => {
-
-  console.log(data);
-
-});
+const API_KEY = "your_api_key_here";
 ```
 
-## Behavior
-
-- A function is passed as an argument.
-- Callback executes after asynchronous work completes.
-- Early JavaScript async operations relied heavily on callbacks.
+4. Open `index.html` directly in your browser — no server needed!
 
 ---
 
-# 2. Callback Hell
+## 🌐 API Reference
 
-## Example
+This project uses the **OpenWeatherMap Current Weather API**.
 
-```js
-getUser(function(user) {
-
-  getPosts(user.id, function(posts) {
-
-    getComments(posts[0].id, function(comments) {
-
-      console.log(comments);
-
-    });
-
-  });
-
-});
+```
+GET https://api.openweathermap.org/data/2.5/weather
+    ?q={city_name}
+    &appid={API_KEY}
+    &units=metric
 ```
 
-## Behavior
-
-- Nested callbacks become difficult to read.
-- Code becomes harder to maintain.
-- Error handling becomes complicated.
-- Promises were introduced to solve this problem.
+| Parameter | Description |
+|---|---|
+| `q` | City name (e.g. `Chennai`) |
+| `appid` | Your API key |
+| `units` | `metric` for Celsius |
 
 ---
 
-# 3. Promises
+## 📸 UI States
 
-## Creating A Promise
-
-```js
-const promise = new Promise(
-
-  (resolve, reject) => {
-
-    const success = true;
-
-    if (success) {
-
-      resolve("Success");
-
-    }
-
-    else {
-
-      reject("Failed");
-
-    }
-
-  }
-
-);
-```
-
-## Consuming A Promise
-
-```js
-promise
-  .then((data) => {
-
-    console.log(data);
-
-  })
-  .catch((error) => {
-
-    console.error(error);
-
-  })
-  .finally(() => {
-
-    console.log("Completed");
-
-  });
-```
-
-## Behavior
-
-- Represents a future value.
-- Avoids callback hell.
-- Supports success and failure handling.
-- Improves code readability.
+| State | When it appears |
+|---|---|
+| 🌍 Empty State | On initial page load |
+| ⏳ Loading State | While API fetch is in progress |
+| ❌ Error State | If city not found or network fails |
+| ✅ Weather State | On successful API response |
 
 ---
 
-# 4. Promise States
+## 🔮 Future Improvements
 
-## States
-
-```text
-Pending
-   ↓
-Fulfilled
-```
-
-OR
-
-```text
-Pending
-   ↓
-Rejected
-```
-
-## Behavior
-
-- Pending → Initial state.
-- Fulfilled → Operation completed successfully.
-- Rejected → Operation failed.
+- [ ] 5-day weather forecast section
+- [ ] Geolocation — detect user's current city automatically
+- [ ] Temperature unit toggle (°C / °F)
+- [ ] Weather charts using Chart.js
+- [ ] Hourly forecast cards
+- [ ] Progressive Web App (PWA) support
+- [ ] Search suggestions / autocomplete
 
 ---
 
-# 5. Promise.all()
+## 🧪 Key Concepts Demonstrated
 
-## Example
+This project is a strong **Phase 6 Advanced JavaScript** mini project because it combines:
 
-```js
-Promise.all([
+- **OOP with ES6 Classes** — structured, maintainable code
+- **Async programming** — real API calls with async/await
+- **AbortController** — advanced fetch management
+- **localStorage** — client-side data persistence
+- **State management** — clean UI state transitions
+- **Error handling** — production-level try/catch usage
+- **DOM manipulation** — fully dynamic rendering
 
-  fetchWeather(),
-
-  fetchForecast()
-
-])
-.then((results) => {
-
-  console.log(results);
-
-});
-```
-
-## Behavior
-
-- Runs multiple promises simultaneously.
-- Waits until all promises complete.
-- Fails immediately if any promise fails.
+All implemented in **Vanilla JavaScript** with zero frameworks or libraries.
 
 ---
-
-# 6. Promise.allSettled()
-
-## Example
-
-```js
-Promise.allSettled([
-
-  promise1,
-
-  promise2,
-
-  promise3
-
-]);
-```
-
-## Behavior
-
-- Waits for all promises.
-- Returns both success and failure results.
-- Useful when all responses are required.
-
----
-
-# 7. Promise.race()
-
-## Example
-
-```js
-Promise.race([
-
-  promise1,
-
-  promise2
-
-]);
-```
-
-## Behavior
-
-- First settled promise wins.
-- Can return success or failure.
-- Useful for request timeout patterns.
-
----
-
-# 8. Promise.any()
-
-## Example
-
-```js
-Promise.any([
-
-  promise1,
-
-  promise2,
-
-  promise3
-
-]);
-```
-
-## Behavior
-
-- First fulfilled promise wins.
-- Ignores rejected promises.
-- Fails only if all promises fail.
-
----
-
-# 9. Async Functions
-
-## Example
-
-```js
-async function loadData() {
-
-  return "Weather Data";
-
-}
-```
-
-## Behavior
-
-- Always returns a Promise.
-- Simplifies asynchronous programming.
-- Works seamlessly with await.
-
----
-
-# 10. Await Keyword
-
-## Example
-
-```js
-async function getWeather() {
-
-  const response =
-  await fetch(url);
-
-  const data =
-  await response.json();
-
-  console.log(data);
-
-}
-```
-
-## Behavior
-
-- Pauses execution until promise resolves.
-- Makes async code appear synchronous.
-- Improves readability.
-
----
-
-# 11. Try Catch Error Handling
-
-## Example
-
-```js
-async function fetchData() {
-
-  try {
-
-    const response =
-    await fetch(url);
-
-    const data =
-    await response.json();
-
-    return data;
-
-  }
-
-  catch(error) {
-
-    console.error(error);
-
-  }
-
-}
-```
-
-## Behavior
-
-- Prevents application crashes.
-- Handles network failures gracefully.
-- Provides fallback UI opportunities.
-
----
-
-# 12. Fetch API
-
-## GET Request
-
-```js
-const response =
-await fetch(url);
-
-const data =
-await response.json();
-```
-
-## Behavior
-
-- Sends HTTP request.
-- Receives server response.
-- Converts JSON data into JavaScript objects.
-
----
-
-# 13. Response Validation
-
-## Example
-
-```js
-const response =
-await fetch(url);
-
-if (!response.ok) {
-
-  throw new Error(
-    `HTTP ${response.status}`
-  );
-
-}
-```
-
-## Behavior
-
-- Fetch does not throw for 404 or 500 errors.
-- Manual validation is required.
-- Prevents invalid API responses from being processed.
-
----
-
-# 14. Loading State
-
-## Example
-
-```js
-loadingElement.classList.remove(
-  "hidden"
-);
-```
-
-## Behavior
-
-- Informs users that data is being fetched.
-- Improves user experience.
-- Prevents confusion during network delays.
-
----
-
-# 15. Error State
-
-## Example
-
-```js
-errorElement.textContent =
-"Unable to fetch weather data.";
-```
-
-## Behavior
-
-- Displays meaningful error messages.
-- Helps users understand failures.
-- Improves usability.
-
----
-
-# 16. Empty State
-
-## Example
-
-```js
-weatherContainer.innerHTML =
-"Search for a city to view weather.";
-```
-
-## Behavior
-
-- Guides users before performing actions.
-- Prevents blank screens.
-- Improves application clarity.
-
----
-
-# 17. Event Handling
-
-## Form Submit Event
-
-```js
-form.addEventListener(
-
-  "submit",
-
-  handleSearch
-
-);
-```
-
-## Behavior
-
-- Captures user interaction.
-- Triggers weather search.
-- Starts asynchronous workflow.
-
----
-
-# 18. preventDefault()
-
-## Example
-
-```js
-form.addEventListener(
-
-  "submit",
-
-  (e) => {
-
-    e.preventDefault();
-
-  }
-
-);
-```
-
-## Behavior
-
-- Prevents page refresh.
-- Allows JavaScript-controlled submission.
-- Essential for modern frontend applications.
-
----
-
-# Concepts Learned
-
-- Callbacks
-- Callback Hell
-- Promises
-- Promise States
-- Promise.all()
-- Promise.allSettled()
-- Promise.race()
-- Promise.any()
-- Async Functions
-- Await Keyword
-- Try Catch
-- Error Handling
-- Fetch API
-- HTTP Requests
-- Response Validation
-- Loading State
-- Error State
-- Empty State
-- Event Handling
-- preventDefault()
-
----
-
-# Conclusion
-
-Phase 6 focused on asynchronous JavaScript and API communication.
-
-This phase introduced Callbacks, Promises, Async/Await, Fetch API, Error Handling, and HTTP Requests.
-
-The Weather Dashboard project demonstrated how modern frontend applications communicate with external APIs, handle asynchronous data, manage UI states, and provide a better user experience.
-
-These concepts are widely used in production applications, React projects, API-driven systems, dashboard applications, and frontend interviews.
