@@ -1,4 +1,4 @@
-const API_KEY = "d3b3b7ce58a320a59aa29b88cab6146e";
+const API_KEY = CONFIG.API_KEY;
 class StorageManager {
   static THEME_KEY = "weatherTheme";
   static SEARCH_KEY = "recentCities";
