@@ -2,8 +2,8 @@
 
 ![HTML](https://img.shields.io/badge/HTML5-orange?style=for-the-badge&logo=html5) ![CSS](https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css3) ![JavaScript](https://img.shields.io/badge/JavaScript-yellow?style=for-the-badge&logo=javascript) ![API](https://img.shields.io/badge/OpenWeatherMap-API-green?style=for-the-badge) ![Status](https://img.shields.io/badge/Status-Completed-brightgreen?style=for-the-badge)
 
-# 🚀 Live Demo  
-https://your-live-demo-link.com
+# 🚀 Live Project Link
+https://github.com/priyanka-srm/test-repo.git
 
 # 📌 Project Overview  
 The Advanced Weather Dashboard is a real-time weather application built using HTML, CSS, and JavaScript. It allows users to search any city and view live weather data using the OpenWeatherMap API. This project demonstrates real-world frontend development concepts such as API integration, asynchronous JavaScript, DOM manipulation, UI state management, error handling, and local storage persistence.
