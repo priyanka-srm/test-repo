@@ -9,14 +9,27 @@ class StorageManager {
     return localStorage.getItem(this.THEME_KEY);
   }
   static saveSearch(city) {
-    let searches = JSON.parse(localStorage.getItem(this.SEARCH_KEY)) || [];
+    let searches;
+    try {
+      searches = JSON.parse(
+        localStorage.getItem(this.SEARCH_KEY)
+      ) || [];
+    } catch (error) {
+      searches = [];
+    }
     searches = searches.filter(c => c !== city);
     searches.unshift(city);
     if (searches.length > 5) searches.pop();
     localStorage.setItem(this.SEARCH_KEY, JSON.stringify(searches));
   }
   static getSearches() {
-    return JSON.parse(localStorage.getItem(this.SEARCH_KEY)) || [];
+    try {
+      return JSON.parse(
+       localStorage.getItem(this.SEARCH_KEY) 
+      ) || [];
+    } catch (error) {
+      return [];
+    }
   }
 }
 class WeatherDashboard {
@@ -59,7 +72,10 @@ class WeatherDashboard {
     this.lastCity = city;
     await this.fetchWeather(city);
   }
+  /* ========= Fetch Weather ======= */
   async fetchWeather(city) {
+    /* ======= update last searched city ========= */
+    this.lastCity = city;
     try {
       this.showLoading();
       // cancel previous request (IMPORTANT FIX)
@@ -71,8 +87,14 @@ class WeatherDashboard {
       const response = await fetch(url, {
         signal: this.controller.signal,
       });
-      if (!response.ok) {
+      if (response.status === 404) {
         throw new Error("City not found");
+      }
+      if (response.status === 401) {
+        throw new Error("Invalid API key");
+      }
+      if (!response.ok) {
+        throw new Error("Something went wrong");
       }
       const data = await response.json();
       this.renderWeather(data);
@@ -89,6 +111,12 @@ class WeatherDashboard {
     this.errorState.classList.add("hidden");
     this.weatherContainer.classList.add("hidden");
     this.emptyState.classList.add("hidden");
+    /* =========== retry logic ============= */
+    if (state === "error") {
+      this.retryBtn.classList.remove("hidden");
+    } else {
+      this.retryBtn.classList.add("hidden");
+    }
     if (state === "loading") this.loadingState.classList.remove("hidden");
     if (state === "error") this.errorState.classList.remove("hidden");
     if (state === "weather") this.weatherContainer.classList.remove("hidden");
@@ -107,19 +135,20 @@ class WeatherDashboard {
     document.getElementById("cityName").textContent =
       `${data.name}, ${data.sys.country}`;
     document.getElementById("temperature").textContent =
-      `${Math.round(data.main.temp)}°C`;
+      `${Math.round(data.main.temp)}`;
     document.getElementById("weatherDescription").textContent =
       data.weather[0].description;
     document.getElementById("humidity").textContent =
       `${data.main.humidity}%`;
     document.getElementById("windSpeed").textContent =
-      `${data.wind.speed} km/h`;
+      `${data.wind.speed} m/s`;
     document.getElementById("feelsLike").textContent =
       `${Math.round(data.main.feels_like)}°C`;
     document.getElementById("cloudiness").textContent =
       `${data.clouds.all}%`;
-    document.getElementById("weatherIcon").src =
-      `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    const icon = document.getElementById("weatherIcon");
+    icon.style.display = "block";
+    icon.src =`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
   }
   /* ================= RECENT SEARCHES ================= */
   renderRecentSearches() {
