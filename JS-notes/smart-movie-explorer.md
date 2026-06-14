@@ -1,79 +1,92 @@
 # 🎬 Smart Movie Explorer
 
-A modern movie search web application built using HTML, CSS, and JavaScript.  
-This project fetches movie data dynamically using the OMDB API and displays movie details in a clean responsive UI.
+A modern movie discovery web application built using **HTML, CSS, and JavaScript** that allows users to search movies, view detailed information, save favorite movies, maintain recently viewed history, and restore search state using Browser APIs.
+
+This project demonstrates real-world frontend development concepts including API integration, asynchronous JavaScript, DOM manipulation, state persistence, URL management, and browser storage APIs.
 
 ---
 
 # 🚀 Features
 
-✅ Search Movies  
-✅ Default Movies on Load  
-✅ Movie Details Popup  
-✅ Theme Toggle (Dark / Light Mode)  
-✅ Favorite Button UI  
-✅ Loading Indicator  
-✅ No Results Message  
-✅ Responsive Movie Cards  
-✅ API Data Fetching  
+✅ Search Movies using OMDb API
+
+✅ Default Movies on Initial Load
+
+✅ Movie Details Popup
+
+✅ Dark / Light Theme Toggle
+
+✅ Favorite Movies using localStorage
+
+✅ Recently Viewed Movies using sessionStorage
+
+✅ Search Query Synchronization using URL API
+
+✅ Search State Restoration using URLSearchParams
+
+✅ Loading States
+
+✅ No Results Handling
+
+✅ Responsive Movie Grid Layout
+
+✅ API Key Security using config.js
 
 ---
 
-# 🧠 ES6+ Concepts Used
+# 🧠 Concepts Practiced
 
-## 1. Arrow Functions
-```js
-searchInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    searchMovies();
-  }
-});
+## JavaScript ES6+
+
+- Arrow Functions
+- Template Literals
+- Async / Await
+- Event Handling
+- DOM Manipulation
+- Array Methods
+- JSON Handling
+
+## Browser APIs (Phase 7)
+
+### localStorage
+
+Used to permanently store favorite movies inside the browser.
+
+### sessionStorage
+
+Used to maintain recently viewed movies during the current browser session.
+
+### URL API
+
+Used to synchronize search queries with the browser URL.
+
+Example:
+
+```text
+?search=leo
 ```
 
----
+### URLSearchParams
 
-## 2. Template Literals
-```js
-const res = await fetch(
-  `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
-);
-```
+Used to restore search state when the page reloads.
 
 ---
 
-## 3. Destructuring
+# 🔐 API Key Security
+
+To avoid exposing API keys publicly:
+
+- API key moved to `config.js`
+- `config.js` added to `.gitignore`
+- `config.example.js` provided as a template
+- Real API key is never pushed to GitHub
+
+Example:
+
 ```js
-const { Title, Poster } = movie;
-```
-
----
-
-## 4. Spread Operator
-```js
-const updatedMovies = [...movies];
-```
-
----
-
-## 5. Default Parameters
-```js
-function showMessage(msg = "Loading...") {
-  console.log(msg);
-}
-```
-
----
-
-## 6. Optional Chaining
-```js
-movie?.Poster
-```
-
----
-
-## 7. Nullish Coalescing
-```js
-const movieName = movie.Title ?? "Unknown";
+const CONFIG = {
+  API_KEY: "YOUR_API_KEY_HERE"
+};
 ```
 
 ---
@@ -83,511 +96,80 @@ const movieName = movie.Title ?? "Unknown";
 - HTML5
 - CSS3
 - JavaScript (ES6+)
-- OMDB API
+- OMDb API
+- Browser APIs
+  - localStorage
+  - sessionStorage
+  - URL API
+  - URLSearchParams
 
 ---
 
-# 🌐 API Used
+# 📁 Project Structure
 
-OMDB API
-
-Example:
-```js
-https://www.omdbapi.com/?apikey=YOUR_API_KEY&s=avengers
+```text
+smart-movie-explorer/
+├── html/
+│   └── index.html
+├── css/
+│   └── style.css
+├── js/
+│   ├── script.js
+│   ├── config.js
+│   └── config.example.js
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-# 📄 HTML Code
+# ⚙️ How It Works
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <title>Smart Movie Explorer</title>
-
-  <link rel="stylesheet"
-        href="../css/style.css">
-</head>
-
-<body>
-
-<header>
-
-  <h1>🎬 Smart Movie Explorer</h1>
-
-  <div class="search-box">
-
-    <input type="text"
-           id="searchInput"
-           placeholder="Search movies...">
-
-    <button id="searchBtn">
-      Search
-    </button>
-
-    <button id="themeToggle">
-      🌙 Theme
-    </button>
-
-  </div>
-
-</header>
-
-<section id="moviesContainer"></section>
-
-<!-- Popup -->
-
-<div id="popup">
-
-  <div class="popup-content">
-
-    <span id="close">✖</span>
-
-    <img id="popup-img">
-
-    <h2 id="popup-title"></h2>
-
-    <p id="popup-desc"></p>
-
-  </div>
-
-</div>
-
-<script src="../js/script.js"></script>
-
-</body>
-</html>
-```
+1. User searches for a movie.
+2. Search query is added to the URL.
+3. Application fetches movie data from OMDb API.
+4. Movies are rendered dynamically.
+5. Clicking a movie opens detailed information.
+6. Favorite movies are stored in localStorage.
+7. Recently viewed movies are stored in sessionStorage.
+8. Page refresh restores search state automatically.
 
 ---
 
-# 🎨 CSS Code
+# 🎯 Challenges Solved
 
-```css
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background: #0f0f0f;
-  color: white;
-  transition: 0.3s;
-}
+### Browser Storage Management
 
-/* Header */
+Implemented persistent and temporary storage using localStorage and sessionStorage.
 
-header {
-  text-align: center;
-  padding: 20px;
-  background: #141414;
-  position: sticky;
-  top: 0;
-}
+### URL State Management
 
-.search-box {
-  margin-top: 10px;
-}
+Search state remains available even after page refresh.
 
-input {
-  padding: 10px;
-  width: 260px;
-  border-radius: 5px;
-  border: none;
-}
+### API Key Protection
 
-button {
-  padding: 10px;
-  background: red;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-left: 5px;
-}
+Separated API key configuration from application logic and prevented secret keys from being committed to GitHub.
 
-/* Movies Grid */
+### Dynamic UI Rendering
 
-#moviesContainer {
-  display: grid;
-  grid-template-columns:
-  repeat(auto-fill, minmax(180px, 1fr));
-
-  gap: 20px;
-  padding: 20px;
-}
-
-/* Movie Card */
-
-.movieCard {
-  background: #1c1c1c;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.movieCard:hover {
-  transform: scale(1.08);
-}
-
-.movieCard img {
-  width: 100%;
-  height: 260px;
-  object-fit: cover;
-}
-
-.movieInfo {
-  padding: 10px;
-  text-align: center;
-}
-
-/* Loader */
-
-.loader {
-  text-align: center;
-  font-size: 20px;
-}
-
-/* Popup */
-
-#popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  background: rgba(0,0,0,0.85);
-
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-content {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  width: 320px;
-  text-align: center;
-}
-
-.popup-content img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-#close {
-  float: right;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* Theme */
-
-.light-mode {
-  background: #f5f5f5;
-  color: black;
-}
-
-.light-mode header {
-  background: #ffffff;
-}
-
-.light-mode .movieCard {
-  background: white;
-  color: black;
-}
-
-/* Favorite Button */
-
-.favBtn {
-  margin-top: 8px;
-  padding: 8px;
-  background: crimson;
-  border-radius: 5px;
-  width: 100%;
-}
-
-/* No Results */
-
-.noResults {
-  text-align: center;
-  font-size: 22px;
-  margin-top: 50px;
-}
-```
-
----
-
-# ⚡ JavaScript Code
-
-```js
-const API_KEY = "8793cc0e";
-
-/* Elements */
-
-const searchBtn =
-document.getElementById("searchBtn");
-
-const searchInput =
-document.getElementById("searchInput");
-
-const moviesContainer =
-document.getElementById("moviesContainer");
-
-const popup =
-document.getElementById("popup");
-
-const popupImg =
-document.getElementById("popup-img");
-
-const popupTitle =
-document.getElementById("popup-title");
-
-const popupDesc =
-document.getElementById("popup-desc");
-
-const closeBtn =
-document.getElementById("close");
-
-const themeToggle =
-document.getElementById("themeToggle");
-
-/* Load Default Movies */
-
-window.onload = () => {
-  loadDefaultMovies();
-};
-
-/* Events */
-
-searchBtn.addEventListener(
-  "click",
-  searchMovies
-);
-
-searchInput.addEventListener(
-  "keypress",
-  (e) => {
-
-    if (e.key === "Enter") {
-      searchMovies();
-    }
-
-  }
-);
-
-/* Theme Toggle */
-
-themeToggle.addEventListener(
-  "click",
-  () => {
-    document.body.classList.toggle(
-      "light-mode"
-    );
-  }
-);
-
-/* Default Movies */
-
-async function loadDefaultMovies() {
-
-  moviesContainer.innerHTML =
-  "<p class='loader'>Loading movies...</p>";
-
-  try {
-
-    const res = await fetch(
-      `https://www.omdbapi.com/?apikey=${API_KEY}&s=avengers`
-    );
-
-    const data = await res.json();
-
-    if (data.Response === "True") {
-
-      displayMovies(data.Search);
-
-    } else {
-
-      moviesContainer.innerHTML =
-      `<p>${data.Error}</p>`;
-    }
-
-  } catch {
-
-    moviesContainer.innerHTML =
-    "<p>Error loading data</p>";
-  }
-}
-
-/* Search Movies */
-
-async function searchMovies() {
-
-  const query =
-  searchInput.value.trim();
-
-  if (!query) {
-
-    alert("Enter movie name");
-
-    return;
-  }
-
-  moviesContainer.innerHTML =
-  "<p class='loader'>Searching...</p>";
-
-  try {
-
-    const res = await fetch(
-      `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
-    );
-
-    const data = await res.json();
-
-    if (data.Response === "True") {
-
-      displayMovies(data.Search);
-
-    } else {
-
-      moviesContainer.innerHTML = `
-        <div class="noResults">
-          😢 No movies found
-        </div>
-      `;
-    }
-
-  } catch {
-
-    moviesContainer.innerHTML =
-    "<p>Error fetching data</p>";
-  }
-}
-
-/* Display Movies */
-
-function displayMovies(movies) {
-
-  moviesContainer.innerHTML = "";
-
-  movies.forEach((movie) => {
-
-    const poster =
-      movie.Poster !== "N/A"
-      ? movie.Poster
-      : "https://via.placeholder.com/300x450";
-
-    const card =
-    document.createElement("div");
-
-    card.classList.add("movieCard");
-
-    card.innerHTML = `
-      <img src="${poster}">
-
-      <div class="movieInfo">
-
-        <h3>${movie.Title}</h3>
-
-        <button class="favBtn">
-          ❤️ Favorite
-        </button>
-
-      </div>
-    `;
-
-    card.addEventListener(
-      "click",
-      () => {
-        showDetails(movie.imdbID);
-      }
-    );
-
-    moviesContainer.appendChild(card);
-
-  });
-}
-
-/* Show Details */
-
-async function showDetails(id) {
-
-  try {
-
-    const res = await fetch(
-      `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`
-    );
-
-    const movie = await res.json();
-
-    popupImg.src = movie.Poster;
-
-    popupTitle.innerText =
-    movie.Title;
-
-    popupDesc.innerText =
-    movie.Plot;
-
-    popup.style.display = "flex";
-
-  } catch {
-
-    alert("Error loading details");
-  }
-}
-
-/* Close Popup */
-
-closeBtn.addEventListener(
-  "click",
-  () => {
-    popup.style.display = "none";
-  }
-);
-
-/* Outside Click */
-
-popup.addEventListener(
-  "click",
-  (e) => {
-
-    if (e.target === popup) {
-
-      popup.style.display = "none";
-    }
-
-  }
-);
-```
+Movie cards and popup content are generated dynamically using JavaScript.
 
 ---
 
 # 🚀 Future Improvements
 
-- Add Local Storage Favorites
+- Watchlist System
 - Pagination
-- Watchlist Feature
+- Infinite Scroll
 - Movie Ratings Filter
 - Trailer Integration
-- Responsive Mobile Navbar
+- Genre Based Filtering
+- PWA Support
 
 ---
 
 # 📌 Conclusion
 
-This project helped in understanding:
+Smart Movie Explorer demonstrates practical frontend development skills including API integration, browser storage management, URL state synchronization, asynchronous JavaScript, and responsive UI development.
 
-- DOM Manipulation
-- API Fetching
-- ES6+ Features
-- Event Handling
-- Async/Await
-- Dynamic UI Rendering
-
-The Smart Movie Explorer project demonstrates practical frontend development concepts using modern JavaScript.
+The project serves as a strong portfolio piece for showcasing real-world JavaScript, Browser APIs, Local Storage, Session Storage, URL Management, and API Security concepts.

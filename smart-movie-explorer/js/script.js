@@ -1,5 +1,6 @@
-const API_KEY = "8793cc0e";
+const API_KEY = CONFIG.API_KEY;
 /* Elements */
+const FAVORITES_KEY = "favoriteMovies";
 const searchBtn = document.getElementById("searchBtn");
 const searchInput = document.getElementById("searchInput");
 const moviesContainer = document.getElementById("moviesContainer");
@@ -11,7 +12,14 @@ const closeBtn = document.getElementById("close");
 const themeToggle = document.getElementById("themeToggle");
 /* Load Default Movies */
 window.onload = () => {
-  loadDefaultMovies();
+  const params = new URLSearchParams(window.location.search);
+  const query =params.get("search");
+  if (query) {
+    searchInput.value = query;
+    searchMovies();
+  } else {
+    loadDefaultMovies();
+  }
 };
 /* Events */
 searchBtn.addEventListener("click", searchMovies);
@@ -47,6 +55,9 @@ async function loadDefaultMovies() {
 /* Search Movies */
 async function searchMovies() {
   const query = searchInput.value.trim();
+  const url = new URL(window.location);
+  url.searchParams.set("search" , query);
+  window.history.pushState({} , "" , url);
   if (!query) {
     alert("Enter movie name");
     return;
@@ -91,6 +102,12 @@ function displayMovies(movies) {
         </button>
       </div>
     `;
+    const favBtn = card.querySelector(".favBtn");
+    favBtn.addEventListener("click" , (e) => {
+      e.stopPropagation();
+      saveFavorite(movie);
+    }
+  );
     card.addEventListener("click", () => {
       showDetails(movie.imdbID);
     });
@@ -98,12 +115,40 @@ function displayMovies(movies) {
   });
 }
 /* Show Details */
+/* favourite movies */
+function getFavorites() {
+  return JSON.parse(
+    localStorage.getItem(
+      FAVORITES_KEY
+    ) || "[]"
+  );
+}
+function saveFavorite(movie) {
+  const favorites = getFavorites();
+  const exists = favorites.some(m => m.imdbID === movie.imdbID);
+  if(!exists) {
+    favorites.push(movie);
+    localStorage.setItem( FAVORITES_KEY, JSON.stringify(favorites));
+    alert("Added to Favorites");
+  }
+}
+/* recently viewed */
+function saveRecentlyViewed(movie) {
+  let recent = JSON.parse(sessionStorage.getItem ("recentMovies") || "[]");
+  recent = recent.filter(m => m.imdbID !== movie.imdbID);
+  recent.unshift(movie);
+  if (recent.length > 5) {
+    recent.pop();
+  }
+  sessionStorage.setItem("recentMovies" , JSON.stringify(recent));
+}
 async function showDetails(id) {
   try {
     const res = await fetch(
       `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`
     );
     const movie = await res.json();
+    saveRecentlyViewed(movie);
     popupImg.src = movie.Poster;
     popupTitle.innerText = movie.Title;
     popupDesc.innerText = movie.Plot;
