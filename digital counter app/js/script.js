@@ -1,41 +1,47 @@
-let count = localStorage.getItem("count") 
-    ? parseInt(localStorage.getItem("count")) 
-    : 0;
+const state = {
+    count: localStorage.getItem("count")
+    ? parseInt(localStorage.getItem("count")) : 0
+};
 let countValue = document.getElementById("count");
 let incBtn = document.getElementById("increase");
 let decBtn = document.getElementById("decrease");
 let resetBtn = document.getElementById("reset");
 let stepInput = document.getElementById("step");
 // initial display
-countValue.textContent = count;
-updateColor();
+render();
 incBtn.addEventListener("click", function(){
     let step = parseInt(stepInput.value);
-    count += step;
-    updateDisplay();
-});
+    setState({
+        count: state.count + step
+    }
+    );
+} );
 decBtn.addEventListener("click", function(){
     let step = parseInt(stepInput.value);
-    count -= step;
-    updateDisplay();
+    setState ( {
+        count: state.count - step
+    }
+    );
 });
 resetBtn.addEventListener("click", function(){
-    count = 0;
-    updateDisplay();
+    setState( {
+        count: 0
+    });
 });
-function updateDisplay(){
-    countValue.textContent = count;
-    localStorage.setItem("count", count);
-    updateColor();
+function setState(updates) {
+    Object.assign(state , updates);
+    localStorage.setItem("count" , state.count);
+    render();
 }
-function updateColor(){
-    if(count > 0){
+function render () {
+    countValue.textContent = state.count;
+    if(state.count > 0) {
         countValue.style.color = "green";
-    } 
-    else if(count < 0){
+    }
+    else if(state.count < 0) {
         countValue.style.color = "red";
-    } 
-    else{
+    }
+    else {
         countValue.style.color = "black";
     }
 }

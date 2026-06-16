@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Movie Explorer</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header>
@@ -13,8 +13,12 @@
     <input type="text" id="searchInput" placeholder="Search movies...">
     <button id="searchBtn">Search</button>
     <button id="themeToggle">🌙 Theme</button>
+    <button id="favoritesBtn">❤️ Favorites</button>
+    <button id="recentBtn">🕒 Recently Viewed</button>
   </div>
 </header>
+<section id="favoritesContainer"></section>
+<section id="recentContainer"></section>
 <section id="moviesContainer"></section>
 <!-- Popup -->
 <div id="popup">
@@ -25,7 +29,7 @@
     <p id="popup-desc"></p>
   </div>
 </div>
-<script src="../js/config.js"></script>
-<script src="../js/script.js"></script>
+<script src="js/config.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

@@ -117,3 +117,14 @@ button {
   font-size: 22px;
   margin-top: 50px;
 }
+/* favourites container */
+#favoritesContainer {
+  padding: 20px;
+  text-align: center;
+}
+#favoritesContainer h2 {
+  margin-bottom: 15px;
+}
+#favoritesContainer p {
+  margin: 5px 0;
+}
