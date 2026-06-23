@@ -21,19 +21,25 @@ async function searchUser() {
     if(!username) {
         return;
     }
-    state.loading = true;
-    state.error = null;
-    render();
+    setState({
+        loading:true,
+        error:null
+    });
     try {
         const user = await fetchUser(username);
-        state.user = user;
+        setState({
+            user:user
+        });
     }
     catch(error) {
-        state.error = error.message;
+        setState({
+            error:error.message
+        });
     }
     finally {
-        state.loading = false;
-        render();
+        setState({
+            loading:false
+        });
     }
 }
 searchInput.addEventListener("keydown" , function(event) {

@@ -27,3 +27,12 @@ button{
     background-color:gray;
     color:white;
 }
+.positive{
+    color: green;
+}
+.negative{
+    color: red;
+}
+.zero{
+    color: black;
+}
