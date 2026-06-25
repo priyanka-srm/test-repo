@@ -1,5 +1,5 @@
-async function fetchUser(username) {
-    const response = await fetch(`https://api.github.com/users/${username}`);
+async function fetchUser(username , signal) {
+    const response = await fetch(`https://api.github.com/users/${username}`, {signal});
     if(!response.ok) {
         throw new Error("User not found");
     }

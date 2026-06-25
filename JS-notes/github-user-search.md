@@ -1,14 +1,16 @@
 # 🔎 GitHub User Search
 
-A GitHub user search web application built using **HTML, CSS, and JavaScript** that allows users to search GitHub profiles, view user information, and update UI dynamically based on application state.
+A GitHub user search web application built using **HTML, CSS, and JavaScript** that allows users to search GitHub profiles and display user information dynamically.
 
-This project demonstrates real-world frontend development concepts including API integration, asynchronous JavaScript, state management, dynamic rendering, performance optimization, and clean code organization.
+This project demonstrates frontend concepts including API integration, asynchronous JavaScript, state management, dynamic rendering, performance optimization, and clean code organization.
 
 ---
 
 # 🚀 Features
 
 ✅ Search GitHub users using GitHub REST API
+
+✅ Search-as-you-type functionality using Debouncing
 
 ✅ Dynamic user profile rendering
 
@@ -24,6 +26,8 @@ This project demonstrates real-world frontend development concepts including API
 
 ✅ Async/Await API handling
 
+✅ AbortController for cancelling previous API requests
+
 ✅ Separate API, State, and UI logic
 
 ✅ Responsive UI structure
@@ -36,21 +40,23 @@ This project demonstrates real-world frontend development concepts including API
 
 - Async / Await
 - Fetch API
-- Template Literals
 - Event Handling
 - Error Handling
 - Arrow Functions
-- Destructuring
 - Spread Operator
 - JSON Handling
+- Closures
+- setTimeout()
+- AbortController
+
 
 ---
 
-# ⚛️ State Management (Phase 8)
+# ⚛️ State Management
 
 The application follows a state-driven UI approach.
 
-Instead of directly changing the DOM from different places, the application maintains a central state object.
+Instead of directly modifying the DOM from multiple places, the application maintains a central state object.
 
 Flow:
 
@@ -92,9 +98,9 @@ The state acts as the single source of truth for the application.
 
 # 🔄 UI Rendering System
 
-The application uses a render function to update UI based on current state.
+The application updates UI using a render function based on the current state.
 
-The UI supports multiple states:
+The UI handles different states:
 
 ---
 
@@ -104,8 +110,8 @@ While fetching GitHub user data:
 
 Example:
 
-```text
-Loading...
+```
+loading...
 ```
 
 ---
@@ -120,9 +126,10 @@ Displays:
 - Username
 - Followers Count
 
+
 Example:
 
-```text
+```
 octocat
 
 Followers: 23039
@@ -136,7 +143,7 @@ Handles invalid GitHub usernames.
 
 Example:
 
-```text
+```
 User not found
 ```
 
@@ -144,11 +151,11 @@ User not found
 
 ## Empty State
 
-When user does not enter any search value:
+When input is empty:
 
 Example:
 
-```text
+```
 Search a user to see details
 ```
 
@@ -158,21 +165,25 @@ Search a user to see details
 
 ## Purpose
 
-Debouncing prevents unnecessary API calls while typing.
+Debouncing prevents unnecessary API requests while typing.
 
 Without debounce:
 
 ```
 p
+
 pr
+
 pri
+
 priy
-priyan
+
+priya
 ```
 
 Every character can trigger an API request.
 
-This creates unnecessary network requests.
+This creates unnecessary network calls.
 
 ---
 
@@ -190,7 +201,7 @@ Wait for delay
 API Request
 ```
 
-Only the final input triggers the API call.
+Only after the user stops typing, the search function executes.
 
 ---
 
@@ -220,52 +231,60 @@ function debounce(fn, delay){
 
 ## Benefits
 
-- Reduces API calls
+- Reduces unnecessary API calls
 - Improves performance
-- Better user experience
-- Prevents unnecessary server requests
+- Creates smoother user experience
+- Prevents excessive requests
 
 ---
 
-# ⏱️ Throttling
+# 🛑 AbortController
 
 ## Purpose
 
-Throttle controls how frequently a function executes.
+Debouncing reduces API calls, but multiple requests can still overlap.
 
-Common use cases:
+Older API responses may return later and overwrite newer results.
 
-- Scroll events
-- Resize events
-- Infinite scrolling
-- Performance optimization
+AbortController cancels previous requests when a new search starts.
 
 ---
 
-## Working
+Example:
 
 ```
-Event
+Request 1
 
- |
+Request 2
 
-Execute Function
-
- |
-
-Wait
-
- |
-
-Execute Again
+Request 3
 ```
+
+Previous request is cancelled before starting a new one.
 
 ---
 
-## Benefits
+Implementation:
 
-- Controls repeated function execution
-- Improves application performance
+```js
+controller.abort();
+
+controller = new AbortController();
+```
+
+Fetch request receives the signal:
+
+```js
+fetch(url,{
+ signal: controller.signal
+})
+```
+
+Benefits:
+
+- Prevents stale responses
+- Keeps UI data correct
+- Handles API race conditions
 
 ---
 
@@ -273,19 +292,19 @@ Execute Again
 
 ## GitHub REST API
 
-API Endpoint:
+Endpoint:
 
-```text
+```
 https://api.github.com/users/{username}
 ```
 
 Example:
 
-```text
+```
 https://api.github.com/users/octocat
 ```
 
-The application fetches user information from GitHub API and displays the response dynamically.
+The application fetches GitHub user data and displays it dynamically.
 
 ---
 
@@ -294,7 +313,11 @@ The application fetches user information from GitHub API and displays the respon
 Application flow:
 
 ```
-User enters username
+User types username
+
+        |
+
+Debounce waits
 
         |
 
@@ -302,7 +325,7 @@ Fetch API Request
 
         |
 
-GitHub Server Response
+GitHub Response
 
         |
 
@@ -352,8 +375,9 @@ Responsible for:
 
 - Managing application state
 - Storing user data
-- Tracking loading status
+- Tracking loading state
 - Tracking errors
+
 
 Example:
 
@@ -364,7 +388,9 @@ const state = {
 
     loading:false,
 
-    error:null
+    error:null,
+
+    query:""
 
 };
 ```
@@ -379,24 +405,27 @@ Responsible for:
 - Fetch requests
 - Handling API errors
 
+
 Example:
 
 ```js
-async function fetchUser(username){
+async function fetchUser(username, signal){
 
-    const response = await fetch(
-    `https://api.github.com/users/${username}`
-    );
-
-
-    if(!response.ok){
-
-        throw new Error("User not found");
-
-    }
+const response =
+await fetch(
+`https://api.github.com/users/${username}`,
+{signal}
+);
 
 
-    return await response.json();
+if(!response.ok){
+
+throw new Error("User not found");
+
+}
+
+
+return response.json();
 
 }
 ```
@@ -409,6 +438,8 @@ Responsible for:
 
 - DOM selection
 - Event handling
+- Debounce logic
+- AbortController handling
 - Calling API functions
 - Updating state
 - Rendering UI
@@ -417,11 +448,11 @@ Responsible for:
 
 # ⚙️ How It Works
 
-1. User enters GitHub username.
+1. User types GitHub username.
 
-2. Enter key event triggers search.
+2. Debounce waits for typing to stop.
 
-3. Application validates input.
+3. Previous API request is cancelled using AbortController.
 
 4. Loading state is activated.
 
@@ -447,13 +478,13 @@ Invalid usernames return API errors.
 
 Solution:
 
-Checked response status using:
+Checked response status:
 
 ```js
 if(!response.ok)
 ```
 
-and displayed friendly error message.
+and displayed error message.
 
 ---
 
@@ -461,7 +492,7 @@ and displayed friendly error message.
 
 Problem:
 
-Different UI changes needed during API request.
+Different UI changes were needed during API requests.
 
 Solution:
 
@@ -478,41 +509,43 @@ states.
 
 ---
 
-## 3. Avoiding Direct DOM Updates
+## 3. Avoiding Unsafe DOM Updates
 
 Problem:
 
-Large applications become difficult to maintain.
+Using innerHTML with external data can create security issues.
 
 Solution:
 
-Used state-driven rendering approach.
+Used createElement() and textContent.
 
-Flow:
+Example:
 
+```js
+element.textContent = text;
 ```
-Event
 
-↓
-
-State Change
-
-↓
-
-Render
-
-↓
-
-UI Update
-```
+This prevents unwanted HTML execution.
 
 ---
 
-## 4. Code Organization
+## 4. Handling API Race Conditions
 
 Problem:
 
-Keeping everything inside one JavaScript file becomes difficult.
+Old API responses can overwrite newer searches.
+
+Solution:
+
+Used AbortController to cancel previous requests.
+
+---
+
+## 5. Code Organization
+
+Problem:
+
+Keeping all logic inside one file becomes difficult.
 
 Solution:
 
@@ -520,7 +553,7 @@ Separated:
 
 - API logic
 - State logic
-- Application logic
+- UI logic
 
 ---
 
@@ -542,9 +575,8 @@ Separated:
 - Async/Await
 - State Management
 - DOM Manipulation
-- Event Handling
 - Debouncing
-- Throttling
+- AbortController
 - Error Handling
 
 ---
@@ -553,7 +585,6 @@ Separated:
 
 - Search history
 - Pagination support
-- Infinite scrolling
 - Display repositories
 - Dark mode
 - Followers and following details
@@ -564,6 +595,6 @@ Separated:
 
 # 📌 Conclusion
 
-GitHub User Search demonstrates practical frontend development skills including API integration, asynchronous programming, state-driven UI rendering, error handling, and performance optimization.
+GitHub User Search demonstrates practical frontend development skills including API integration, asynchronous programming, state-driven rendering, performance optimization, and clean code architecture.
 
-This project helped understand how modern frontend applications manage user interactions efficiently using structured code organization and clean frontend architecture.
+This project helped understand how modern frontend applications handle user interactions efficiently using structured JavaScript patterns.
