@@ -37,6 +37,7 @@ button {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
   padding: 20px;
+  margin-top: 20px;
 }
 /* Movie Card */
 .movieCard {
@@ -126,5 +127,19 @@ button {
   margin-bottom: 15px;
 }
 #favoritesContainer p {
+  margin: 5px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+#recentContainer {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+#recentContainer h2 {
+  margin-bottom: 15px;
+}
+#recentContainer p {
   margin: 5px 0;
 }

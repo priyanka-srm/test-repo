@@ -1,36 +1,42 @@
 # 🎬 Smart Movie Explorer
 
-A modern movie discovery web application built using **HTML, CSS, and JavaScript** that allows users to search movies, view detailed information, save favorite movies, maintain recently viewed history, and restore search state using Browser APIs.
+A modern Movie Explorer Web Application built using **HTML, CSS, and JavaScript**.
 
-This project demonstrates real-world frontend development concepts including API integration, asynchronous JavaScript, DOM manipulation, state persistence, URL management, and browser storage APIs.
+This project allows users to search movies, view movie details, manage favourite movies, track recently viewed movies, and switch between themes.
+
+The application is developed using a **modular JavaScript architecture** with ES6 Modules, where API handling, UI rendering, state management, storage, and application logic are separated into different layers.
+
+This project demonstrates clean frontend architecture concepts using Vanilla JavaScript.
 
 ---
 
 # 🚀 Features
 
-✅ Search Movies using OMDb API
+✅ Search Movies using OMDB API
 
-✅ Default Movies on Initial Load
+✅ Default Movies Loading on Application Start
 
 ✅ Movie Details Popup
 
-✅ Dark / Light Theme Toggle
+✅ Recently Viewed Movies
 
-✅ Favorite Movies using localStorage
+✅ Favourite Movies
 
-✅ Recently Viewed Movies using sessionStorage
+✅ Theme Toggle
 
-✅ Search Query Synchronization using URL API
+✅ Theme Persistence using localStorage
 
-✅ Search State Restoration using URLSearchParams
+✅ Loading State Handling
 
-✅ Loading States
+✅ Error State Handling
 
-✅ No Results Handling
+✅ Empty Search Validation
 
-✅ Responsive Movie Grid Layout
+✅ Broken Poster Handling
 
-✅ API Key Security using config.js
+✅ API Request Cancellation using AbortController
+
+✅ ES6 Module Based Architecture
 
 ---
 
@@ -38,55 +44,400 @@ This project demonstrates real-world frontend development concepts including API
 
 ## JavaScript ES6+
 
-- Arrow Functions
-- Template Literals
-- Async / Await
-- Event Handling
+- ES6 Modules
+- Import / Export
+- Async Await
+- Fetch API
 - DOM Manipulation
-- Array Methods
-- JSON Handling
-
-## Browser APIs (Phase 7)
-
-### localStorage
-
-Used to permanently store favorite movies inside the browser.
-
-### sessionStorage
-
-Used to maintain recently viewed movies during the current browser session.
-
-### URL API
-
-Used to synchronize search queries with the browser URL.
-
-Example:
-
-```text
-?search=leo
-```
-
-### URLSearchParams
-
-Used to restore search state when the page reloads.
+- Event Handling
+- Objects
+- Object.assign()
+- Error Handling
+- LocalStorage
+- SessionStorage
 
 ---
 
-# 🔐 API Key Security
+# 🎯 Phase 10 — Code Architecture & Modules
 
-To avoid exposing API keys publicly:
+The main goal of this phase was converting the application into a structured modular architecture.
 
-- API key moved to `config.js`
-- `config.js` added to `.gitignore`
-- `config.example.js` provided as a template
-- Real API key is never pushed to GitHub
+Instead of keeping all logic inside one JavaScript file, the application was divided into multiple modules based on responsibility.
+
+---
+
+# 📦 ES6 Modules
+
+The project uses JavaScript modules to split functionality into different files.
 
 Example:
 
 ```js
-const CONFIG = {
-  API_KEY: "YOUR_API_KEY_HERE"
+import { fetchMovies } from "./api.js";
+```
+
+Benefits:
+
+- Better code organization
+- Avoids large single files
+- Easier debugging
+- Easier maintenance
+
+---
+
+# 🏗️ Separation of Concerns
+
+Each file is responsible for a specific part of the application.
+
+---
+
+# 🔹 api.js — API Layer
+
+Responsible for handling all API related operations.
+
+Responsibilities:
+
+- Fetch movie search results
+- Fetch movie details
+- Handle API responses
+- Manage AbortController
+
+
+Example:
+
+```js
+fetchMovies(query)
+```
+
+API logic is separated from UI logic.
+
+---
+
+# 🔹 ui.js — UI Layer
+
+Responsible only for displaying information on the screen.
+
+Responsibilities:
+
+- Render movie cards
+- Display loading message
+- Display error messages
+- Show movie details popup
+
+
+Example:
+
+```js
+renderMovies()
+```
+
+The UI layer does not handle API requests.
+
+---
+
+# 🔹 state.js — State Management
+
+Responsible for maintaining application data.
+
+Example:
+
+```js
+export const state = {
+
+    movies: [],
+
+    selectedMovie: null,
+
+    query: "",
+
+    loading: false,
+
+    error: null
+
 };
+```
+
+All application data is stored inside a centralized state object.
+
+---
+
+# 🔹 storage.js — Storage Layer
+
+Responsible for browser storage operations.
+
+Used for:
+
+- Favourite movies
+- Recently viewed movies
+- Theme preference
+
+
+Storage:
+
+- localStorage
+- sessionStorage
+
+---
+
+# 🔹 handlers.js — Application Logic
+
+Responsible for connecting different modules.
+
+Handles:
+
+- User actions
+- API calls
+- State updates
+- UI updates
+
+
+Flow:
+
+```text
+User Action
+
+      ↓
+
+handlers.js
+
+      ↓
+
+api.js
+
+      ↓
+
+state update
+
+      ↓
+
+ui.js render
+```
+
+---
+
+# 🔹 app.js — Entry Point
+
+Responsible for:
+
+- Application initialization
+- Adding event listeners
+- Connecting modules
+
+Handles:
+
+- Search events
+- Theme toggle
+- Popup close
+- Default movie loading
+
+---
+
+# 🔄 Application Data Flow
+
+The application follows a structured flow:
+
+```text
+User Interaction
+
+        ↓
+
+app.js
+
+        ↓
+
+handlers.js
+
+        ↓
+
+api.js
+
+        ↓
+
+state.js
+
+        ↓
+
+ui.js
+
+        ↓
+
+Updated UI
+```
+
+---
+
+# 🧠 State Management Thinking
+
+Instead of directly updating the DOM everywhere, application data is managed through a state object.
+
+Example:
+
+```js
+const state = {
+
+    movies: [],
+
+    loading: false,
+
+    error: null
+
+};
+```
+
+State stores the current application information.
+
+---
+
+# ⚡ Error Handling
+
+The application handles different states.
+
+## Loading State
+
+```text
+User searches movie
+
+        ↓
+
+Loading message displayed
+```
+
+---
+
+## Error State
+
+```text
+API failure
+
+        ↓
+
+Error message displayed
+```
+
+---
+
+## Empty Search Validation
+
+```text
+Empty input
+
+        ↓
+
+Please enter movie name
+```
+
+---
+
+# 🛡️ API Request Handling
+
+Implemented AbortController to prevent old API responses from overwriting new search results.
+
+Example:
+
+```text
+Search Batman
+
+        ↓
+
+Search Spider-Man
+
+        ↓
+
+Cancel previous request
+
+        ↓
+
+Display latest result
+```
+
+---
+
+# 🖼️ Image Handling
+
+Movie posters may not always exist.
+
+Implemented fallback image handling:
+
+```text
+Poster unavailable
+
+        ↓
+
+Placeholder image displayed
+```
+
+---
+
+# 💾 Data Persistence
+
+Browser storage is used to maintain application data.
+
+## localStorage
+
+Used for:
+
+- Favourite movies
+- Theme preference
+
+
+## sessionStorage
+
+Used for:
+
+- Recently viewed movies
+
+---
+
+# 🎨 Theme Management
+
+Theme preference is stored and restored.
+
+Flow:
+
+```text
+User changes theme
+
+        ↓
+
+Save theme
+
+        ↓
+
+Reload application
+
+        ↓
+
+Restore previous theme
+```
+
+---
+
+# 📁 Project Structure
+
+```text
+movie-app/
+
+├── index.html
+
+├── css/
+
+│   └── style.css
+
+├── js/
+
+│   ├── api.js
+
+│   ├── app.js
+
+│   ├── handlers.js
+
+│   ├── state.js
+
+│   ├── storage.js
+
+│   └── ui.js
+
+└── README.md
 ```
 
 ---
@@ -95,81 +446,67 @@ const CONFIG = {
 
 - HTML5
 - CSS3
-- JavaScript (ES6+)
-- OMDb API
-- Browser APIs
-  - localStorage
-  - sessionStorage
-  - URL API
-  - URLSearchParams
-
----
-
-# 📁 Project Structure
-
-```text
-smart-movie-explorer/
-├── html/
-│   └── index.html
-├── css/
-│   └── style.css
-├── js/
-│   ├── script.js
-│   ├── config.js
-│   └── config.example.js
-├── .gitignore
-└── README.md
-```
-
----
-
-# ⚙️ How It Works
-
-1. User searches for a movie.
-2. Search query is added to the URL.
-3. Application fetches movie data from OMDb API.
-4. Movies are rendered dynamically.
-5. Clicking a movie opens detailed information.
-6. Favorite movies are stored in localStorage.
-7. Recently viewed movies are stored in sessionStorage.
-8. Page refresh restores search state automatically.
+- JavaScript ES6+
+- OMDB API
+- LocalStorage
+- SessionStorage
 
 ---
 
 # 🎯 Challenges Solved
 
-### Browser Storage Management
+## Code Organization
 
-Implemented persistent and temporary storage using localStorage and sessionStorage.
+Before:
 
-### URL State Management
+```text
+Single JavaScript file
 
-Search state remains available even after page refresh.
+- API calls
+- DOM updates
+- Storage handling
+- Events
+```
 
-### API Key Protection
+After:
 
-Separated API key configuration from application logic and prevented secret keys from being committed to GitHub.
+```text
+api.js
+    ↓
+ui.js
+    ↓
+state.js
+    ↓
+storage.js
+    ↓
+handlers.js
+    ↓
+app.js
+```
 
-### Dynamic UI Rendering
-
-Movie cards and popup content are generated dynamically using JavaScript.
+Each module has a clear responsibility.
 
 ---
 
-# 🚀 Future Improvements
+## Separation of Concerns
 
-- Watchlist System
-- Pagination
-- Infinite Scroll
-- Movie Ratings Filter
-- Trailer Integration
-- Genre Based Filtering
-- PWA Support
+API logic, UI logic, state management, and storage handling are separated.
+
+This makes the application easier to maintain and debug.
 
 ---
 
 # 📌 Conclusion
 
-Smart Movie Explorer demonstrates practical frontend development skills including API integration, browser storage management, URL state synchronization, asynchronous JavaScript, and responsive UI development.
+Smart Movie Explorer demonstrates modern frontend development practices using Vanilla JavaScript.
 
-The project serves as a strong portfolio piece for showcasing real-world JavaScript, Browser APIs, Local Storage, Session Storage, URL Management, and API Security concepts.
+The project focuses on:
+
+- ES6 Modules
+- Modular Architecture
+- State Management Thinking
+- API Integration
+- Browser Storage Handling
+- Separation of Responsibilities
+
+This project provides a strong foundation for building scalable frontend applications.
