@@ -61,3 +61,37 @@ export function showError(message){
     error.textContent = `😢 ${message}`;
     moviesContainer.appendChild(error);
 }
+export function renderFavorites(favorites){
+    moviesContainer.innerHTML = "";
+    const favoritesContainer = document.getElementById("favoritesContainer");
+    favoritesContainer.innerHTML = "";
+    if(favorites.length === 0){
+        favoritesContainer.innerHTML = "<p>No Favorite Movies</p>";
+        return;
+    }
+    const title = document.createElement("h2");
+    title.textContent = "❤️ Favorite Movies";
+    favoritesContainer.appendChild(title);
+    favorites.forEach(movie=>{
+        const p = document.createElement("p");
+        p.textContent = movie.Title;
+        favoritesContainer.appendChild(p);
+    });
+}
+export function renderRecent(recent){
+    moviesContainer.innerHTML = "";
+    const recentContainer = document.getElementById("recentContainer");
+    recentContainer.innerHTML = "";
+    if(recent.length === 0){
+        recentContainer.innerHTML = "<p>No Recently Viewed Movies</p>";
+        return;
+    }
+    const title = document.createElement("h2");
+    title.textContent = "🕒 Recently Viewed";
+    recentContainer.appendChild(title);
+    recent.forEach(movie=>{
+        const p = document.createElement("p");
+        p.textContent = movie.Title;
+        recentContainer.appendChild(p);
+    });
+}

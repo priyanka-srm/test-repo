@@ -1,6 +1,7 @@
 import { handleSearch, handleMovieDetails } from "./handlers.js";
 import { getFavorites, getRecentMovies, saveTheme, loadTheme } from "./storage.js";
-import { showError } from "./ui.js";
+import { showError, renderFavorites, renderRecent } from "./ui.js";
+import { debounce } from "./utils.js";
 // Elements
 const popup = document.getElementById("popup");
 const closeBtn = document.getElementById("close");
@@ -9,8 +10,6 @@ const searchBtn = document.getElementById("searchBtn");
 const themeToggle = document.getElementById("themeToggle");
 const favoritesBtn = document.getElementById("favoritesBtn");
 const recentBtn = document.getElementById("recentBtn");
-const favoritesContainer = document.getElementById("favoritesContainer");
-const recentContainer = document.getElementById("recentContainer");
 // SEARCH 
 searchBtn.addEventListener("click", () => {
     const query = searchInput.value.trim();
@@ -32,35 +31,24 @@ searchInput.addEventListener("keydown", (event) => {
         searchInput.value = "";
     }
 });
+const searchHandler = debounce((query)=>{
+    handleSearch(query);
+},400);
+searchInput.addEventListener("input",()=>{
+    const query = searchInput.value.trim();
+    if(query){
+        searchHandler(query);
+    }
+});
 // FAVORITES 
 favoritesBtn.addEventListener("click", () => {
     const favorites = getFavorites();
-    favoritesContainer.innerHTML = "";
-    if (favorites.length === 0) {
-        favoritesContainer.innerHTML = "<p>No Favorite Movies</p>";
-        return;
-    }
-    favoritesContainer.innerHTML = "<h2>❤️ Favorite Movies</h2>";
-    favorites.forEach(movie => {
-        const p = document.createElement("p");
-        p.textContent = movie.Title;
-        favoritesContainer.appendChild(p);
-    });
+    renderFavorites(favorites);
 });
 // RECENT
 recentBtn.addEventListener("click", () => {
     const recent = getRecentMovies();
-    recentContainer.innerHTML = "";
-    if (recent.length === 0) {
-        recentContainer.innerHTML = "<p>No Recently Viewed Movies</p>";
-        return;
-    }
-    recentContainer.innerHTML = "<h2>🕒 Recently Viewed</h2>";
-    recent.forEach(movie => {
-        const p = document.createElement("p");
-        p.textContent = movie.Title;
-        recentContainer.appendChild(p);
-    });
+    renderRecent(recent);
 });
 // POPUP CLOSE 
 closeBtn.addEventListener("click", () => {

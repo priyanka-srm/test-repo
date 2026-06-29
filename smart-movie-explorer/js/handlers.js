@@ -42,6 +42,6 @@ export async function handleMovieDetails(id){
         showDetailsPopup(movie);
     }
     catch(error){
-        console.log(error);
+        showError("Could not load movie details");
     }
 }
