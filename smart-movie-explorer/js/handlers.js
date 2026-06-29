@@ -12,15 +12,16 @@ export async function handleSearch(query) {
     showLoader();
     try {
         const data = await fetchMovies(query);
+        console.log("API RESPONSE:", data);
         if(data.Response === "True") {
             setState({
-                movies: data.Search, loading: false, error: null
+                movies: data.Search, loading:false, error:null
             });
             renderMovies();
         }
         else {
             setState({
-                movies:[], loading: false, error: data.Error
+                movies:[], loading:false, error:data.Error
             });
             showError(data.Error);
         }
@@ -30,7 +31,7 @@ export async function handleSearch(query) {
             return;
         }
         setState({
-            movies:[], loading: false, error: error.message
+            movies:[], loading:false, error:error.message
         });
         showError(error.message);
     }

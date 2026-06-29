@@ -20,7 +20,7 @@ export function saveFavorite(movie){
 // get recently viewed
 export function getRecentMovies(){
     try {
-        return JSON.parse(sessionStorage.getItem("recentMovies")) || [];
+        return JSON.parse(localStorage.getItem("recentMovies")) || [];
     }
     catch {
         return [];
@@ -34,7 +34,7 @@ export function saveRecentlyViewed(movie){
     if(recent.length > 5){
         recent.pop();
     }
-    sessionStorage.setItem( "recentMovies", JSON.stringify(recent));
+    localStorage.setItem("recentMovies", JSON.stringify(recent));
 }
 // save theme 
 const THEME_KEY = "theme";
