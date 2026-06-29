@@ -1,3 +1,3 @@
  export const CONFIG = {
-    API_KEY: "bad35f3b"
+    API_KEY: "bad35f3b" ,
 }
