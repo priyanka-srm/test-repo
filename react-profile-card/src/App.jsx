@@ -1,11 +1,17 @@
 import "./App.css";
+import avatar from "./assets/hero.png";
 function App() {
+  const name = "Priyanka S";
+  const role = "Frontend Developer";
+  const isOnline = true;
   return (
     <div className="container">
       <div className="card">
-        <h1>Priyanka S</h1>
-        <h3>Frontend Developer</h3>
-        <p> Learning React Fundamentals. </p>
+        <img src={avatar} alt={`Photo of ${name}`} className="avatar"/>
+        <h1>{name}</h1>
+        <h2>{role}</h2>
+        <p>{isOnline ? "🟢 Online" : "⚪ Offline"}</p>
+        <p>Learning React Fundamentals.</p>
       </div>
     </div>
   );
