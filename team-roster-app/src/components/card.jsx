@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 function Card({ title = "Untitled", children }) {
   return (
     <div className="card">
@@ -6,4 +7,8 @@ function Card({ title = "Untitled", children }) {
     </div>
   );
 }
+Card.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.node.isRequired,
+};
 export default Card;
