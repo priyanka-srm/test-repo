@@ -1,48 +1,49 @@
 import { useEffect, useRef } from "react";
+// Static user data
+const users = [
+  {
+    id: 1,
+    name: "Priya",
+    role: "Frontend Developer",
+  },
+  {
+    id: 2,
+    name: "Rohit",
+    role: "Backend Developer",
+  },
+  {
+    id: 3,
+    name: "Nithya",
+    role: "UI Designer",
+  },
+  {
+    id: 4,
+    name: "Mathan",
+    role: "Full Stack Developer",
+  },
+  {
+    id: 5,
+    name: "Arun",
+    role: "Frontend Developer",
+  },
+  {
+    id: 6,
+    name: "Virat",
+    role: "Software Engineer",
+  },
+  {
+    id: 7,
+    name: "Sriram",
+    role: "Backend Developer",
+  },
+  {
+    id: 8,
+    name: "Akshay",
+    role: "UI Designer",
+  },
+];
 function SearchResults({ query, category }) {
   const previousQuery = useRef("");
-  const users = [
-    {
-      id: 1,
-      name: "Priya",
-      role: "Frontend Developer",
-    },
-    {
-      id: 2,
-      name: "Rohit",
-      role: "Backend Developer",
-    },
-    {
-      id: 3,
-      name: "Nithya",
-      role: "UI Designer",
-    },
-    {
-      id: 4,
-      name: "Mathan",
-      role: "Full Stack Developer",
-    },
-    {
-      id: 5,
-      name: "Arun",
-      role: "Frontend Developer",
-    },
-    {
-      id: 6,
-      name: "Virat",
-      role: "Software Engineer",
-    },
-    {
-      id: 7,
-      name: "Sriram",
-      role: "Backend Developer",
-    },
-    {
-      id: 8,
-      name: "Akshay",
-      role: "UI Designer",
-    },
-  ];
   useEffect(() => {
     console.log("Previous Search:", previousQuery.current);
     console.log("Current Search:", query);
@@ -57,7 +58,7 @@ function SearchResults({ query, category }) {
       console.log("Cleanup executed");
     };
   }, []);
-  // Empty search la results kaata koodathu
+  // Don't render results for an empty search
   if (!query.trim()) {
     return null;
   }

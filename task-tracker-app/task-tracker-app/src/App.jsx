@@ -22,37 +22,32 @@ function App() {
   // Add Task
   function addTask(text) {
     const newTask = {
-      id: Date.now(),
-      text: text,
+      id: crypto.randomUUID(),
+      text,
       completed: false,
     };
-    setTasks([...tasks, newTask]);
+    setTasks((prev) => [...prev, newTask]);
   }
   // Delete Task
   function deleteTask(id) {
-    const updatedTasks = tasks.filter(
-      (task) => task.id !== id
-    );
-    setTasks(updatedTasks);
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   }
   // Toggle Complete / Incomplete
   function toggleTask(id) {
-    setTasks(
-      tasks.map((task) =>
+    setTasks((prev) =>
+      prev.map((task) =>
         task.id === id
           ? {
               ...task,
               completed: !task.completed,
             }
-          : task
-      )
+          : task,
+      ),
     );
   }
   // Task Counter
   const totalTasks = tasks.length;
-  const completedTasks = tasks.filter(
-    (task) => task.completed
-  ).length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
   const pendingTasks = totalTasks - completedTasks;
   return (
     <div className="app">

@@ -1,8 +1,8 @@
 # 📝 React Task Tracker
 
-A simple and interactive **Task Tracker application** built using React and Vite.
+A simple and interactive **Task Tracker application** built using **React** and **Vite**.
 
-This project focuses on learning and implementing core React concepts like **components, props, state management, event handling, controlled components, conditional rendering, and dynamic UI updates**.
+This project focuses on learning and implementing core React concepts such as **components, props, state management, event handling, controlled components, conditional rendering, immutable state updates, and dynamic UI rendering**.
 
 ---
 
@@ -10,29 +10,28 @@ This project focuses on learning and implementing core React concepts like **com
 
 ### ➕ Add Task
 
-- Users can enter a new task using the input field.
-- New tasks are added dynamically to the task list.
-- Empty task submission is prevented using validation.
+- Users can add new tasks dynamically.
+- Empty task submission is prevented using input validation.
 
 ### 🗑️ Delete Task
 
-- Users can delete tasks from the task list.
-- Deleting a task updates the React state and automatically updates the UI.
+- Users can delete tasks from the list.
+- The UI updates automatically after deletion.
 
 ### 📋 Task List
 
 - Displays all tasks dynamically.
-- Uses reusable components for better code organization.
+- Uses reusable React components.
 - Each task is rendered using a separate `TaskItem` component.
 
 ### ✅ Task Status
 
-- Completed tasks display with ✅ icon.
-- Pending tasks display with ⬜ icon.
+- Mark tasks as completed or incomplete using a checkbox.
+- Completed tasks are displayed with a **strikethrough** effect.
 
 ### 📊 Task Counter
 
-The application displays:
+Displays:
 
 - Total Tasks
 - Completed Tasks
@@ -40,17 +39,16 @@ The application displays:
 
 ### 🚫 Empty State Handling
 
-- Displays "No Tasks Available" when there are no tasks.
+- Displays **"No Tasks Available"** when the task list is empty.
 
 ---
 
 # 🏗️ Project Structure
 
-```
+```text
 src
 │
 ├── components
-│   │
 │   ├── TaskForm.jsx
 │   ├── TaskList.jsx
 │   └── TaskItem.jsx
@@ -63,16 +61,14 @@ src
 
 # 🔄 Application Flow
 
-```
+```text
                  App.jsx
-                    |
-        -------------------------
-        |                       |
-    TaskForm              TaskList
-        |                       |
-    Add Task              TaskItem
-                                |
-                          Delete Task
+                    │
+        ┌───────────┴───────────┐
+        │                       │
+    TaskForm               TaskList
+                                │
+                           TaskItem
 ```
 
 ---
@@ -88,13 +84,11 @@ The application is divided into reusable components:
 - TaskList
 - TaskItem
 
-Each component follows a single responsibility approach.
-
 ---
 
 ## 2. Props
 
-Props are used for communication between parent and child components.
+Props are used to pass data and functions between parent and child components.
 
 Example:
 
@@ -104,32 +98,27 @@ Example:
 <TaskList
   tasks={tasks}
   deleteTask={deleteTask}
+  toggleTask={toggleTask}
 />
 ```
-
-The parent component passes data and functions to child components.
 
 ---
 
 ## 3. useState Hook
 
-React state is used to manage dynamic task data.
-
-Example:
+The application uses the `useState` Hook to manage the task list.
 
 ```jsx
 const [tasks, setTasks] = useState([]);
 ```
 
-Whenever the state changes, React automatically re-renders the UI.
+State updates automatically re-render the UI.
 
 ---
 
 ## 4. Controlled Components
 
-The input field value is controlled using React state.
-
-Example:
+The task input field is implemented as a controlled component.
 
 ```jsx
 <input
@@ -138,47 +127,37 @@ Example:
 />
 ```
 
-Data flow:
+Flow:
 
-```
-User Types
-    ↓
+```text
+User Input
+     ↓
 onChange Event
-    ↓
+     ↓
 State Update
-    ↓
-UI Update
+     ↓
+UI Re-render
 ```
 
 ---
 
 ## 5. Event Handling
 
-React events are handled using:
+The project uses React event handlers:
 
-- onChange
-- onSubmit
-- onClick
-
-Example:
-
-```jsx
-<button onClick={handleSubmit}>
-  Add Task
-</button>
-```
+- `onChange`
+- `onSubmit`
+- `onClick`
 
 ---
 
 ## 6. Dynamic List Rendering
 
-Tasks are displayed dynamically using JavaScript `map()`.
-
-Example:
+Tasks are rendered dynamically using `map()`.
 
 ```jsx
 tasks.map((task) => (
-  <TaskItem 
+  <TaskItem
     key={task.id}
     task={task}
   />
@@ -189,16 +168,28 @@ tasks.map((task) => (
 
 ## 7. Conditional Rendering
 
-Conditional rendering is used to display different UI based on task availability.
-
-Example:
+Displays different UI depending on whether tasks exist.
 
 ```jsx
 tasks.length === 0
-?
-"No Tasks Available"
-:
-"Display Tasks"
+  ? "No Tasks Available"
+  : "Display Tasks"
+```
+
+---
+
+## 8. Immutable State Updates
+
+State is updated immutably using:
+
+- Spread operator (`...`)
+- `map()`
+- `filter()`
+
+The project also uses the **functional update form** of `setState`:
+
+```jsx
+setTasks((prev) => [...prev, newTask]);
 ```
 
 ---
@@ -233,7 +224,7 @@ cd task-tracker
 npm install
 ```
 
-## Run Development Server
+## Run the Development Server
 
 ```bash
 npm run dev
@@ -246,25 +237,21 @@ npm run dev
 Through this project, I learned:
 
 - Creating reusable React components
-- Managing application state using useState
-- Passing data between components using props
-- Handling user interactions
-- Creating controlled input components
+- Managing state with `useState`
+- Passing data using props
+- Handling React events
+- Building controlled forms
 - Rendering dynamic lists
 - Implementing conditional rendering
-- Managing component communication
+- Updating state immutably
+- Using functional state updates for safer state management
 
 ---
 
 # 🔮 Future Improvements
 
-Planned improvements:
-
-- Complete / Incomplete task toggle
 - Edit task functionality
 - LocalStorage persistence
 - Task filtering
 - Dark mode support
 - Improved UI design
-
----

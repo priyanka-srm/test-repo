@@ -8,7 +8,7 @@ function App() {
     <div className="app">
       <div className="container">
         <h1>Live Search App</h1>
-        <SearchBar query={query} setQuery={setQuery} />
+        <SearchBar setQuery={setQuery} />
         <SearchResults query={query} category="All" />
       </div>
     </div>
