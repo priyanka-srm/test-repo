@@ -1,40 +1,45 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import AddExpense from "./components/AddExpense";
 import ExpenseList from "./components/ExpenseList";
 import SearchBar from "./components/SearchBar";
 import Filter from "./components/Filter";
 import Summary from "./components/Summary";
 import DeletedHistory from "./components/DeletedHistory";
-import useLocalStorage from "./hooks/useLocalStorage";
+import expenseReducer, { initialState } from "./reducer/expenseReducer";
 import "./App.css";
 function App() {
-  const [expenses, setExpenses] = useLocalStorage("expenses", []);
-  const [deletedExpenses, setDeletedExpenses] = useLocalStorage(
-    "deletedExpenses",
-    [],
-  );
+  const [state, dispatch] = useReducer(expenseReducer, initialState);
+  const expenses = state.expenses;
+  const deletedExpenses = state.deletedHistory;
   const [editExpense, setEditExpense] = useState(null);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   // ADD EXPENSE
   const addExpense = (expense) => {
-    setExpenses([...expenses, expense]);
+    dispatch({
+      type: "ADD_EXPENSE",
+      payload: expense,
+    });
   };
   // DELETE EXPENSE
   const deleteExpense = (id) => {
-    const deletedItem = expenses.find((expense) => expense.id === id);
-    if (deletedItem) {
-      setDeletedExpenses([...deletedExpenses, deletedItem]);
-    }
-    setExpenses(expenses.filter((expense) => expense.id !== id));
+    dispatch({
+      type: "DELETE_EXPENSE",
+      payload: id,
+    });
   };
   // RESTORE EXPENSE
   const restoreExpense = (id) => {
-    const restoreItem = deletedExpenses.find((expense) => expense.id === id);
-    if (restoreItem) {
-      setExpenses([...expenses, restoreItem]);
-    }
-    setDeletedExpenses(deletedExpenses.filter((expense) => expense.id !== id));
+    dispatch({
+      type: "RESTORE_EXPENSE",
+      payload: id,
+    });
+  };
+  // CLEAR DELETE HISTORY
+  const clearHistory = () => {
+    dispatch({
+      type: "CLEAR_HISTORY",
+    });
   };
   // EDIT CLICK
   const handleEdit = (expense) => {
@@ -42,11 +47,10 @@ function App() {
   };
   // UPDATE EXPENSE
   const updateExpense = (updatedExpense) => {
-    setExpenses(
-      expenses.map((expense) =>
-        expense.id === updatedExpense.id ? updatedExpense : expense,
-      ),
-    );
+    dispatch({
+      type: "UPDATE_EXPENSE",
+      payload: updatedExpense,
+    });
     setEditExpense(null);
   };
   // CANCEL EDIT
@@ -83,7 +87,8 @@ function App() {
         handleEdit={handleEdit} />
       <DeletedHistory
         history={deletedExpenses}
-        restoreExpense={restoreExpense} />
+        restoreExpense={restoreExpense}
+        clearHistory={clearHistory} />
     </div>
   );
 }

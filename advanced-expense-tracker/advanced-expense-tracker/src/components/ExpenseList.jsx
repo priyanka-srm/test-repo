@@ -1,5 +1,5 @@
 import ExpenseItem from "./ExpenseItem";
-function ExpenseList({ expenses, deleteExpense, setEditExpense }) {
+function ExpenseList({ expenses, deleteExpense, handleEdit }) {
   if (expenses.length === 0) {
     return (
       <div>
@@ -15,7 +15,7 @@ function ExpenseList({ expenses, deleteExpense, setEditExpense }) {
           key={expense.id}
           expense={expense}
           deleteExpense={deleteExpense}
-          setEditExpense={setEditExpense} />
+          handleEdit={handleEdit} />
       ))}
     </div>
   );

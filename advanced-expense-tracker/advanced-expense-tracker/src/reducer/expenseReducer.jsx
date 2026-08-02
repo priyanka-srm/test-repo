@@ -12,13 +12,11 @@ function expenseReducer(state, action) {
     }
     case "DELETE_EXPENSE": {
       const deletedExpense = state.expenses.find(
-        (expense) => expense.id === action.payload,
-      );
+        (expense) => expense.id === action.payload, );
       return {
         ...state,
         expenses: state.expenses.filter(
-          (expense) => expense.id !== action.payload,
-        ),
+          (expense) => expense.id !== action.payload, ),
         deletedHistory: deletedExpense
           ? [...state.deletedHistory, deletedExpense]
           : state.deletedHistory,
@@ -26,22 +24,28 @@ function expenseReducer(state, action) {
     }
     case "RESTORE_EXPENSE": {
       const restoredExpense = state.deletedHistory.find(
-        (expense) => expense.id === action.payload,
-      );
+        (expense) => expense.id === action.payload, );
       return {
         ...state,
         expenses: restoredExpense
           ? [...state.expenses, restoredExpense]
           : state.expenses,
         deletedHistory: state.deletedHistory.filter(
-          (expense) => expense.id !== action.payload,
-        ),
+          (expense) => expense.id !== action.payload, ),
       };
     }
     case "CLEAR_HISTORY": {
       return {
         ...state,
         deletedHistory: [],
+      };
+    }
+    case "UPDATE_EXPENSE": {
+      return {
+        ...state,
+        expenses: state.expenses.map((expense) =>
+          expense.id === action.payload.id ? action.payload : expense,
+        ),
       };
     }
     default:

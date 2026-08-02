@@ -1,0 +1,65 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+body {
+  background-color: #f4f4f4;
+}
+.app {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+.header,
+.sidebar,
+.profile-card,
+.settings {
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+/* Light Theme */
+.light {
+  background-color: white;
+  color: #222;
+  border: 1px solid #ddd;
+}
+/* Dark Theme */
+.dark {
+  background-color: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+}
+.sidebar ul {
+  margin-top: 15px;
+  padding-left: 20px;
+}
+.sidebar li {
+  margin-bottom: 8px;
+}
+button {
+  margin-top: 15px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.3s;
+}
+.light button {
+  background: #2563eb;
+  color: white;
+}
+.light button:hover {
+  background: #1d4ed8;
+}
+.dark button {
+  background: #facc15;
+  color: black;
+}
+.dark button:hover {
+  background: #eab308;
+}
