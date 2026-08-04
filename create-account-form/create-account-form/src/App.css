@@ -34,7 +34,11 @@ body {
   margin-bottom: 8px;
   font-weight: 600;
 }
-input,
+/* Text inputs and select only */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
 select {
   width: 100%;
   padding: 12px;
@@ -47,6 +51,42 @@ select:focus {
   outline: none;
   border-color: #4f46e5;
 }
+/* Radio buttons */
+.gender-options {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.gender-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+input[type="radio"] {
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+/* Checkbox */
+.terms {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.terms label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+/* Password */
 .password-box {
   display: flex;
   gap: 10px;
@@ -57,6 +97,7 @@ select:focus {
 .password-box button {
   width: 80px;
 }
+/* Buttons */
 button {
   padding: 12px;
   border: none;
@@ -78,10 +119,12 @@ button:hover {
 .button-group button:last-child {
   background: #64748b;
 }
+/* Error message */
 .form-group p {
   color: red;
   font-size: 14px;
 }
+/* Success message */
 .success-message {
   background: #dcfce7;
   color: #166534;
@@ -90,11 +133,17 @@ button:hover {
   text-align: center;
   margin-bottom: 20px;
 }
+/* Responsive */
 @media (max-width: 600px) {
   .signup-container {
     padding: 20px;
   }
   .button-group {
     flex-direction: column;
+  }
+  .gender-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
