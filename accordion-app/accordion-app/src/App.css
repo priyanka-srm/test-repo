@@ -1,0 +1,137 @@
+.app-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: #f8f9fa;
+}
+.app {
+  width: min(750px, 100%);
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+.app h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+section {
+  margin-bottom: 40px;
+}
+section h2 {
+  margin-bottom: 15px;
+}
+/* Accordion */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.accordion-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+.accordion-header {
+  width: 100%;
+  border: none;
+  background: #f5f5f5;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+.accordion-header:hover {
+  background: #eaeaea;
+}
+.accordion-content {
+  padding: 18px;
+  border-top: 1px solid #ddd;
+}
+.accordion-content p {
+  margin: 0;
+  line-height: 1.6;
+}
+/* Render Props */
+.toggle-demo {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+}
+.toggle-demo button,
+.overflow-container button,
+.modal-content button,
+.product-item button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.toggle-demo p {
+  margin-bottom: 0;
+}
+/* Notification */
+.notification {
+  padding: 14px 16px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.notification.warning {
+  background: #fff3cd;
+}
+.notification.success {
+  background: #d1e7dd;
+}
+/* Stable Key Practice */
+.key-practice {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+}
+/* Portal Test */
+.overflow-container {
+  height: 160px;
+  overflow: hidden;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+}
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(0 0 0 / 0.5);
+  z-index: 9999;
+}
+.modal-content {
+  position: relative;
+  width: min(500px, 90%);
+  padding: 30px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.3);
+}
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+}
