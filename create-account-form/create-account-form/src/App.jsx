@@ -1,9 +1,12 @@
 import SignupForm from "./components/SignupForm";
+import UncontrolledNameFields from "./components/UncontrolledNameFields";
+import "./App.css";
 function App() {
   return (
-    <div className="app">
+    <main className="app">
       <SignupForm />
-    </div>
+      <UncontrolledNameFields />
+    </main>
   );
 }
 export default App;

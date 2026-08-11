@@ -1,15 +1,15 @@
 import { useState } from "react";
+const initialFormData = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  gender: "",
+  country: "India",
+  agree: false,
+};
 function SignupForm() {
-  const initialFormData = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    gender: "",
-    country: "India",
-    agree: false,
-  };
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState("");
@@ -17,10 +17,20 @@ function SignupForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: newValue,
     }));
+    // Clear success message when the user starts editing again
+    setSuccess("");
+    // Clear the error for the field being edited
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   }
   function getPasswordStrength(password) {
     if (!password) {
@@ -84,12 +94,15 @@ function SignupForm() {
     setErrors({});
     setSuccess("");
     setFormData(initialFormData);
+    setShowPassword(false);
+    setShowConfirmPassword(false);
   }
   return (
     <div className="signup-container">
       <h1>Create Account</h1>
       {success && <div className="success-message">{success}</div>}
       <form onSubmit={handleSubmit}>
+        {/* First Name */}
         <div className="form-group">
           <label htmlFor="firstName">First Name</label>
           <input
@@ -98,9 +111,10 @@ function SignupForm() {
             name="firstName"
             placeholder="Enter first name"
             value={formData.firstName}
-            onChange={handleChange}/>
+            onChange={handleChange} />
           {errors.firstName && <p>{errors.firstName}</p>}
         </div>
+        {/* Last Name */}
         <div className="form-group">
           <label htmlFor="lastName">Last Name</label>
           <input
@@ -109,9 +123,10 @@ function SignupForm() {
             name="lastName"
             placeholder="Enter last name"
             value={formData.lastName}
-            onChange={handleChange} />
+            onChange={handleChange}/>
           {errors.lastName && <p>{errors.lastName}</p>}
         </div>
+        {/* Email */}
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -123,6 +138,7 @@ function SignupForm() {
             onChange={handleChange}/>
           {errors.email && <p>{errors.email}</p>}
         </div>
+        {/* Password */}
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <div className="password-box">
@@ -139,14 +155,10 @@ function SignupForm() {
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
-          { passwordStrength && (
-            <p>
-              Password Strength:
-              {passwordStrength}
-            </p>
-          )}
+          {passwordStrength && <p>Password Strength: {passwordStrength}</p>}
           {errors.password && <p>{errors.password}</p>}
         </div>
+        {/* Confirm Password */}
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirm Password</label>
           <div className="password-box">
@@ -165,6 +177,7 @@ function SignupForm() {
           </div>
           {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
         </div>
+        {/* Gender */}
         <div className="form-group">
           <label>Gender</label>
           <label>
@@ -182,7 +195,7 @@ function SignupForm() {
               name="gender"
               value="Female"
               checked={formData.gender === "Female"}
-              onChange={handleChange} />
+              onChange={handleChange}/>
             Female
           </label>
           <label>
@@ -196,6 +209,7 @@ function SignupForm() {
           </label>
           {errors.gender && <p>{errors.gender}</p>}
         </div>
+        {/* Country */}
         <div className="form-group">
           <label htmlFor="country">Country</label>
           <select
@@ -209,6 +223,7 @@ function SignupForm() {
             <option value="Australia">Australia</option>
           </select>
         </div>
+        {/* Terms */}
         <div className="form-group">
           <label>
             <input
@@ -220,6 +235,7 @@ function SignupForm() {
           </label>
           {errors.agree && <p>{errors.agree}</p>}
         </div>
+        {/* Buttons */}
         <div className="button-group">
           <button type="submit">Create Account</button>
           <button type="button" onClick={handleReset}>

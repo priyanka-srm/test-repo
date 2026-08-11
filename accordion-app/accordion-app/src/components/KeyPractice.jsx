@@ -7,6 +7,7 @@ function KeyPractice() {
     { id: 4, name: "Monitor", price: 15000 },
     { id: 5, name: "Headphones", price: 3000 },
   ]);
+  const [useIndexAsKey, setUseIndexAsKey] = useState(false);
   function removeProduct(id) {
     setProducts((currentProducts) =>
       currentProducts.filter((product) => product.id !== id),
@@ -14,16 +15,35 @@ function KeyPractice() {
   }
   return (
     <div className="key-practice">
-      {products.map((product) => (
-        <div className="product-item" key={product.id}>
-          <span>
-            {product.name} - ₹{product.price}
-          </span>
-          <button type="button" onClick={() => removeProduct(product.id)}>
-            Remove
-          </button>
-        </div>
-      ))}
+      <h2>Key Practice</h2>
+      <p>
+        Compare stable keys with array index keys by deleting an item from the
+        middle of the list.
+      </p>
+      <label>
+        <input
+          type="checkbox"
+          checked={useIndexAsKey}
+          onChange={(e) => setUseIndexAsKey(e.target.checked)} />
+        Use array index as key
+        <span> (deliberately buggy for comparison)</span>
+      </label>
+      <div className="product-list">
+        {products.map((product, index) => (
+          <div
+            className="product-item"
+            key={useIndexAsKey ? index : product.id}>
+            <div>
+              <strong>{product.name}</strong>
+              <span> - ₹{product.price}</span>
+            </div>
+            <input type="text" defaultValue="" placeholder="Add a note..." />
+            <button type="button" onClick={() => removeProduct(product.id)}>
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
