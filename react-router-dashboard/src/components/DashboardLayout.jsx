@@ -1,68 +1,100 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import "./DashboardLayout.css";
 
 function DashboardLayout() {
-  const location = useLocation();
-
   return (
     <div className="dashboard">
-      {/* Sidebar */}
+      {/* ================= SIDEBAR ================= */}
+
       <aside className="sidebar">
+        {/* Logo */}
         <div className="logo">
-          <span>⚡</span>
-          RouterDash
+          <span className="logo-icon">⚡</span>
+          <span className="logo-text">RouterDash</span>
         </div>
 
+        {/* Navigation */}
         <nav className="sidebar-nav">
-          <Link to="/" className={location.pathname === "/" ? "active" : ""}>
-            🏠 Dashboard
-          </Link>
-
-          <Link
-            to="/about"
-            className={location.pathname === "/about" ? "active" : ""}
-          >
-            ℹ️ About
-          </Link>
-
-          <Link
-            to="/products"
-            className={
-              location.pathname.startsWith("/products") ? "active" : ""
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
             }
           >
-            📦 Products
-          </Link>
+            <span className="nav-icon">🏠</span>
+            <span className="nav-text">Dashboard</span>
+          </NavLink>
 
-          <Link
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
+            <span className="nav-icon">ℹ️</span>
+            <span className="nav-text">About</span>
+          </NavLink>
+
+          <NavLink
+            to="/products"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
+            <span className="nav-icon">📦</span>
+            <span className="nav-text">Products</span>
+          </NavLink>
+
+          <NavLink
             to="/users/101"
-            className={location.pathname.startsWith("/users") ? "active" : ""}
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
           >
-            👤 Users
-          </Link>
+            <span className="nav-icon">👤</span>
+            <span className="nav-text">Users</span>
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/profile"
-            className={location.pathname === "/profile" ? "active" : ""}
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
           >
-            👨 Profile
-          </Link>
+            <span className="nav-icon">👨</span>
+            <span className="nav-text">Profile</span>
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/settings"
-            className={location.pathname === "/settings" ? "active" : ""}
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
           >
-            ⚙️ Settings
-          </Link>
+            <span className="nav-icon">⚙️</span>
+            <span className="nav-text">Settings</span>
+          </NavLink>
         </nav>
 
+        {/* Login */}
         <div className="sidebar-bottom">
-          <Link to="/login">🔐 Login</Link>
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
+            <span className="nav-icon">🔐</span>
+            <span className="nav-text">Login</span>
+          </NavLink>
         </div>
       </aside>
 
-      {/* Main Area */}
+      {/* ================= MAIN AREA ================= */}
+
       <div className="main-area">
+        {/* Topbar */}
         <header className="topbar">
           <div>
             <h2>Dashboard</h2>
@@ -71,6 +103,7 @@ function DashboardLayout() {
 
           <div className="profile-mini">
             <div className="avatar">P</div>
+
             <div>
               <strong>Priya</strong>
               <small>Developer</small>
@@ -78,6 +111,7 @@ function DashboardLayout() {
           </div>
         </header>
 
+        {/* Page Content */}
         <main className="content">
           <Outlet />
         </main>
