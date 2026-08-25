@@ -1,28 +1,90 @@
-# 🚀 Phase 10 — Todo Server-State App
+# 🚀 TaskFlow — Todo Server-State App
 
-A React Todo application built to practice server-state management using TanStack Query (React Query) with a fake REST API powered by JSON Server.
+A modern React Todo application built to practice **server-state management with TanStack Query** and a fake REST API powered by **JSON Server**.
 
-The main goal of this project was to understand how React applications can fetch, create, delete, cache, invalidate, and optimistically update server data.
+TaskFlow allows users to create, complete, and delete tasks while keeping the UI synchronized with the server through query caching, mutations, query invalidation, optimistic updates, and rollback handling.
 
 ---
 
 ## 📌 Project Overview
 
-This project demonstrates:
+TaskFlow demonstrates how server state can be managed effectively in a React application using TanStack Query.
+
+The application supports:
 
 - Fetching todos from a REST API
 - Adding new todos
+- Marking todos as completed or incomplete
 - Deleting todos
-- Server-state management with TanStack Query
 - Query caching
 - Query invalidation
 - Loading state
 - Error state
 - Empty state
-- Optimistic UI updates
-- Rollback when an optimistic mutation fails
+- Optimistic delete
+- Optimistic completion toggle
+- Rollback when mutations fail
 - API service layer
 - Server synchronization
+- Task statistics
+- Completion percentage
+- Responsive dashboard-style UI
+
+---
+
+## ✨ Features
+
+### 📊 Task Dashboard
+
+The dashboard provides an overview of the current Todo list:
+
+- Total tasks
+- In-progress tasks
+- Completed tasks
+- Overall completion percentage
+- Visual progress bar
+
+### ➕ Add Tasks
+
+Users can create new tasks through the task form.
+
+The application:
+
+- Validates empty input
+- Sends a `POST` request to the API
+- Displays an adding state while the mutation is pending
+- Clears the input after successful creation
+- Invalidates the Todo query after success
+- Displays an error message if the mutation fails
+
+### ✓ Complete / Uncomplete Tasks
+
+Users can toggle a task between:
+
+- `In progress`
+- `Completed`
+
+The completion toggle uses an optimistic update so the UI responds immediately.
+
+If the server update fails, the previous state is restored.
+
+### 🗑️ Delete Tasks
+
+Users can delete individual tasks.
+
+The delete interaction uses an optimistic update:
+
+1. The task disappears immediately.
+2. A `DELETE` request is sent to the server.
+3. If successful, the deletion remains.
+4. If the request fails, the previous task list is restored.
+5. The Todo query is invalidated to synchronize the final state.
+
+### 🔄 Server Synchronization
+
+After mutations, TanStack Query invalidates the `["todos"]` query and refetches the latest server data.
+
+This keeps the UI synchronized with the actual server state.
 
 ---
 
@@ -40,300 +102,415 @@ This project demonstrates:
 
 ## 📂 Project Structure
 
-    todo-app/
+```text
+todo-app/
+│
+├── db.json
+├── package.json
+├── package-lock.json
+├── index.html
+├── vite.config.js
+│
+└── src/
     │
-    ├── db.json
-    ├── package.json
-    ├── package-lock.json
-    ├── index.html
-    ├── vite.config.js
+    ├── components/
+    │   ├── TodoApp.jsx
+    │   └── TodoApp.css
     │
-    └── src/
-        ├── components/
-        │   ├── TodoApp.jsx
-        │   └── TodoApp.css
-        │
-        ├── services/
-        │   └── api.js
-        │
-        ├── App.jsx
-        ├── main.jsx
-        └── index.css
+    ├── services/
+    │   └── api.jsx
+    │
+    ├── App.jsx
+    ├── main.jsx
+    └── index.css
+```
+
+### Architecture
+
+The project separates responsibilities into:
+
+- `TodoApp.jsx` → UI and TanStack Query logic
+- `api.jsx` → REST API communication
+- `TodoApp.css` → Todo application styling
+- `db.json` → Fake database used by JSON Server
+- `main.jsx` → React and TanStack Query application setup
 
 ---
 
 ## ⚙️ Installation
 
-Install the project dependencies:
+Clone the repository and install the dependencies:
 
-    npm install
+```bash
+npm install
+```
 
-Install TanStack Query and JSON Server:
+If the packages are not already installed, install TanStack Query and JSON Server:
 
-    npm install @tanstack/react-query json-server
+```bash
+npm install @tanstack/react-query json-server
+```
 
 ---
 
 ## ▶️ Running the Project
 
-This project requires two terminals because React and JSON Server run separately.
+The project requires two terminals because the React frontend and JSON Server run separately.
 
 ### Terminal 1 — Start JSON Server
 
-    npx json-server db.json
+From the project directory:
+
+```bash
+npx json-server db.json
+```
 
 JSON Server runs on:
 
-    http://localhost:3000
+```text
+http://localhost:3000
+```
 
 Todos endpoint:
 
-    http://localhost:3000/todos
+```text
+http://localhost:3000/todos
+```
 
 ### Terminal 2 — Start React
 
-    npm run dev
+```bash
+npm run dev
+```
 
-React application runs on:
+The Vite development server runs on:
 
-    http://localhost:5173
+```text
+http://localhost:5173
+```
+
+Open the Vite URL in your browser to use TaskFlow.
 
 ---
 
 ## 🗄️ Fake REST API
 
-The project uses db.json as the database.
+The project uses `db.json` as a local fake database.
 
-The Todo data contains:
+Each Todo contains:
 
-- id
-- title
-- completed
+- `id`
+- `title`
+- `completed`
 
-Example data:
+Example:
 
+```json
+{
+  "todos": [
     {
-      "todos": [
-        {
-          "id": "1",
-          "title": "Learn React Query",
-          "completed": false
-        },
-        {
-          "id": "2",
-          "title": "Practice useMutation",
-          "completed": false
-        },
-        {
-          "id": "3",
-          "title": "Build Todo App",
-          "completed": true
-        }
-      ]
+      "id": "1",
+      "title": "Learn React Query",
+      "completed": false
+    },
+    {
+      "id": "2",
+      "title": "Practice useMutation",
+      "completed": false
+    },
+    {
+      "id": "3",
+      "title": "Build Todo App",
+      "completed": true
     }
+  ]
+}
+```
 
-JSON Server automatically provides REST API endpoints for the Todo data.
+JSON Server automatically creates REST endpoints for the Todo resource.
+
+### API Endpoints
+
+| Operation | Method | Endpoint |
+|---|---|---|
+| Get todos | `GET` | `/todos` |
+| Add todo | `POST` | `/todos` |
+| Update todo | `PATCH` | `/todos/:id` |
+| Delete todo | `DELETE` | `/todos/:id` |
 
 ---
 
 ## 🔌 API Service Layer
 
-API logic is separated from the UI component.
+API communication is separated from the UI component and handled inside:
 
-The API service is located at:
+```text
+src/services/api.jsx
+```
 
-    src/services/api.js
+The service provides functions for:
 
-The service provides three main functions:
+```text
+getTodos()
+addTodo(todo)
+updateTodo(id, updates)
+deleteTodo(id)
+```
 
-    getTodos()
-    addTodo(todo)
-    deleteTodo(id)
+The React component does not directly manage API URLs or HTTP requests.
 
-The component does not directly handle API URLs.
+This separation keeps the application architecture cleaner and makes the API layer easier to maintain or replace later.
 
-This separation keeps API communication independent from the UI logic and makes the application easier to maintain.
+The Todo fetch request also supports `AbortController` through the request `signal`, allowing TanStack Query to cancel an in-flight request when necessary.
 
 ---
 
 ## ⚛️ TanStack Query Setup
 
-TanStack Query is configured in main.jsx.
+TanStack Query is configured in `main.jsx`.
 
-A QueryClient is created and provided to the application.
+A `QueryClient` is created:
 
-The main setup is:
+```js
+const queryClient = new QueryClient();
+```
 
-    const queryClient = new QueryClient();
+The application is then wrapped with:
 
-The application is wrapped with QueryClientProvider.
+```jsx
+<QueryClientProvider client={queryClient}>
+  <App />
+</QueryClientProvider>
+```
 
-This makes TanStack Query available throughout the React application.
+This makes the Query Client available throughout the React application.
 
 ---
 
-## 📥 Fetching Todos with useQuery
+## 📥 Fetching Todos with `useQuery`
 
-Todos are fetched using TanStack Query's useQuery hook.
+Todos are fetched using TanStack Query's `useQuery` hook.
 
-The query uses:
+The query configuration uses:
 
-    queryKey: ["todos"]
+```js
+queryKey: ["todos"]
+```
 
 and:
 
-    queryFn: getTodos
+```js
+queryFn: getTodos
+```
 
-The query is responsible for fetching and caching the Todo data from the server.
+TanStack Query manages the server-state data and cache instead of storing the fetched Todo list manually with `useState`.
 
 The request is:
 
-    GET /todos
+```text
+GET /todos
+```
 
-TanStack Query manages the server-state data instead of manually storing the fetched Todo list in component state.
+### Fetch Flow
+
+```text
+React UI
+   ↓
+useQuery
+   ↓
+getTodos()
+   ↓
+GET /todos
+   ↓
+JSON Server
+   ↓
+Query Cache
+   ↓
+UI
+```
 
 ---
 
 ## ⏳ Loading State
 
-While the Todo data is being fetched, the application displays a loading UI.
+While the initial Todo request is running, the application displays a dedicated loading screen.
 
-The loading state is handled using:
+The state is handled using:
 
-    isLoading
+```js
+isLoading
+```
 
-The user sees:
-
-    Loading your todos...
-
-This provides feedback while the server request is in progress.
+This provides clear feedback instead of displaying an empty Todo list while data is still being fetched.
 
 ---
 
 ## ❌ Error State
 
-If the Todo request fails, the application displays an error UI.
+If the Todo request fails, the application displays a dedicated error screen.
 
-The error state is handled using:
+The state is handled using:
 
-    isError
+```js
+isError
+```
 
-The application also displays the actual error message.
+The API error message is also displayed when available.
 
-Example:
-
-    Failed to load todos
-
-This makes API failures easier to identify.
+The user can retry the request using the **Try Again** button.
 
 ---
 
 ## 📝 Empty State
 
-If the server returns an empty Todo list, the application displays an empty state.
+If the server returns no Todos:
 
-The condition is:
+```js
+todos.length === 0
+```
 
-    todos.length === 0
+the application displays a dedicated empty state.
 
-Instead of showing an empty list, the UI displays a message asking the user to add their first task.
+Instead of showing a blank list, the UI encourages the user to create their first task.
 
 ---
 
 ## ➕ Adding Todos
 
-Adding a Todo is handled using TanStack Query's useMutation hook.
+Adding a Todo is handled with TanStack Query's `useMutation`.
 
-The mutation function is:
+The mutation uses:
 
-    addTodo
+```js
+mutationFn: addTodo
+```
 
-When the user submits the form, the application sends the new Todo to the server.
+The request is:
 
-The mutation sends:
+```text
+POST /todos
+```
 
-    POST /todos
+A newly created Todo contains:
 
-The Todo contains:
+```js
+{
+  title: trimmedTitle,
+  completed: false
+}
+```
 
-    title
-    completed
+After successful creation:
 
-The completed value is initially set to false.
+```js
+queryClient.invalidateQueries({
+  queryKey: ["todos"],
+});
+```
 
-After the Todo is successfully added, the todos query is invalidated.
+is called to mark the Todo query as stale and synchronize the UI with the server.
 
 ---
 
-## 🔄 Query Invalidation
+## ✓ Updating Todo Completion
 
-After a successful mutation, the application uses:
+Todo completion is handled using another `useMutation`.
 
-    queryClient.invalidateQueries({
-      queryKey: ["todos"]
-    })
+The request uses:
 
-This marks the Todo query as stale.
+```text
+PATCH /todos/:id
+```
 
-TanStack Query then fetches the latest Todo data from the server.
+The update contains:
 
-This means the application does not manually modify the main Todo list after adding or deleting data.
+```js
+{
+  completed: true
+}
+```
 
-Instead:
+or:
 
-    Mutation
+```js
+{
+  completed: false
+}
+```
+
+The application updates the cached Todo immediately before waiting for the server response.
+
+This creates a responsive completion toggle.
+
+---
+
+## ⚡ Optimistic Completion Toggle
+
+The completion update follows this flow:
+
+```text
+User clicks checkbox
         ↓
-    Server update
+onMutate
         ↓
-    Query invalidation
+Cancel active Todo query
         ↓
-    Refetch
+Save previous cache
         ↓
-    Updated UI
+Update Todo cache immediately
+        ↓
+UI changes instantly
+        ↓
+PATCH request
+        ↓
+Server response
+```
 
-This keeps the UI synchronized with the actual server state.
+If the request succeeds, the change remains.
+
+If the request fails, the previous Todo data is restored.
 
 ---
 
 ## 🗑️ Deleting Todos
 
-Deleting a Todo is also handled using useMutation.
+Deleting a Todo is handled using `useMutation`.
 
 The mutation function is:
 
-    deleteTodo
+```js
+deleteTodo
+```
 
 The request is:
 
-    DELETE /todos/:id
+```text
+DELETE /todos/:id
+```
 
-When the user clicks the Delete button:
-
-    deleteTodoMutation.mutate(todo.id)
-
-The Todo is removed from the server through the JSON Server API.
+When the user clicks **Delete**, the Todo is optimistically removed from the cached list.
 
 ---
 
 ## ⚡ Optimistic Delete
 
-The Delete operation uses an optimistic update.
+The delete operation uses an optimistic update.
 
-Normally, an application might wait for the server response before removing the Todo from the UI.
-
-This project instead removes the Todo from the UI immediately.
+Instead of waiting for the server response, the application immediately removes the Todo from the UI.
 
 The flow is:
 
-    User clicks Delete
-            ↓
-    Todo disappears immediately
-            ↓
-    DELETE request is sent
-            ↓
-    Server responds
-            ↓
-    UI is synchronized
+```text
+User clicks Delete
+        ↓
+Todo disappears immediately
+        ↓
+DELETE request
+        ↓
+Server response
+        ↓
+Query synchronization
+```
 
 This makes the application feel faster and more responsive.
 
@@ -341,103 +518,163 @@ This makes the application feel faster and more responsive.
 
 ## 🔄 Optimistic Rollback
 
-Before performing the optimistic update, the previous Todo data is saved.
+Before changing the cache, the previous Todo data is saved:
 
-The previous cache is retrieved using:
+```js
+const previousTodos =
+  queryClient.getQueryData(["todos"]);
+```
 
-    queryClient.getQueryData(["todos"])
+The Todo is then removed from the cache using:
 
-The selected Todo is then immediately removed from the cached data using:
+```js
+queryClient.setQueryData()
+```
 
-    queryClient.setQueryData()
+If the DELETE request fails, the previous data is restored:
 
-If the DELETE request fails, the previous Todo data is restored.
+```js
+queryClient.setQueryData(
+  ["todos"],
+  context.previousTodos
+);
+```
 
-The rollback uses:
+This creates a safe optimistic update strategy.
 
-    queryClient.setQueryData(
-      ["todos"],
-      context.previousTodos
-    )
+### Rollback Flow
 
-Therefore, the application behaves like this:
-
-    Delete clicked
-          ↓
-    Todo disappears immediately
-          ↓
-    DELETE request
-          ↓
-       Success
-          ↓
-    Todo stays deleted
-
-    OR
-
-    DELETE request fails
-          ↓
-    Previous Todo data restored
-          ↓
-    Todo appears again
-
-This provides a reliable optimistic UI experience.
+```text
+Delete clicked
+      ↓
+Save previous cache
+      ↓
+Remove Todo immediately
+      ↓
+DELETE request
+      ↓
+   ┌───────────────┐
+   │               │
+ Success         Failure
+   │               │
+   ↓               ↓
+Keep deletion    Rollback
+   │               │
+   └───────┬───────┘
+           ↓
+       onSettled
+           ↓
+  invalidateQueries
+           ↓
+      Server Sync
+```
 
 ---
 
 ## 🔁 Mutation Lifecycle
 
-The optimistic delete uses three important mutation lifecycle callbacks.
+The optimistic mutations use three important TanStack Query lifecycle callbacks.
 
-### onMutate
+### `onMutate`
 
-onMutate runs before the mutation request.
+Runs before the mutation request.
 
-It is used to:
+Used to:
 
 - Cancel ongoing Todo queries
-- Save the previous cached Todo data
-- Remove the Todo immediately from the UI
-- Return the previous data for rollback
+- Save the previous cache
+- Update the cache optimistically
+- Return previous data for rollback
+
+### `onError`
+
+Runs when the mutation fails.
+
+Used to:
+
+- Restore the previous cache
+- Inform the user about the failed operation
+
+### `onSettled`
+
+Runs after the mutation succeeds or fails.
+
+Used to:
+
+```js
+queryClient.invalidateQueries({
+  queryKey: ["todos"],
+});
+```
+
+This ensures the final UI is synchronized with the server.
 
 ---
 
-### onError
+## 📊 Task Statistics
 
-onError runs when the mutation fails.
+TaskFlow calculates task statistics directly from the server-state data.
 
-It is used to restore the previous cached Todo data.
+### Total Tasks
 
-This provides the rollback functionality.
+```js
+todos.length
+```
 
----
+### Completed Tasks
 
-### onSettled
+```js
+todos.filter(
+  (todo) => todo.completed
+).length
+```
 
-onSettled runs after the mutation succeeds or fails.
+### In-Progress Tasks
 
-It is used to invalidate the Todo query.
+```js
+totalTodos - completedTodos
+```
 
-This ensures that the final UI is synchronized with the actual server state.
+### Completion Percentage
+
+```js
+Math.round(
+  (completedTodos / totalTodos) * 100
+)
+```
+
+The dashboard displays these values together with a visual progress bar.
 
 ---
 
 ## 🎨 UI Features
 
-The Todo application includes:
+TaskFlow includes:
 
-- Modern dashboard-style interface
-- Todo header
+- Modern productivity dashboard
+- TaskFlow branding
+- Workspace header
+- System status indicator
+- Overall progress section
+- Completion percentage
+- Visual progress bar
 - Total task count
-- Pending task count
+- In-progress task count
 - Completed task count
 - Add task form
-- Todo list
+- Input validation
+- Task list
+- Task numbering
+- Complete / uncomplete control
 - Delete button
-- Loading UI
-- Error UI
+- Loading screen
+- Error screen
+- Retry functionality
 - Empty state
+- Sync indicator
+- Mutation loading feedback
 - Responsive layout
-- Optimistic delete interaction
+- Optimistic interactions
 
 ---
 
@@ -448,120 +685,161 @@ The Todo application includes:
 | React | ✅ |
 | Vite | ✅ |
 | JavaScript | ✅ |
+| CSS | ✅ |
 | JSON Server | ✅ |
 | REST API | ✅ |
 | API Service Layer | ✅ |
 | QueryClient | ✅ |
 | QueryClientProvider | ✅ |
-| useQuery | ✅ |
-| queryKey | ✅ |
-| queryFn | ✅ |
-| useMutation | ✅ |
+| `useQuery` | ✅ |
+| `queryKey` | ✅ |
+| `queryFn` | ✅ |
+| `useMutation` | ✅ |
 | POST Mutation | ✅ |
+| PATCH Mutation | ✅ |
 | DELETE Mutation | ✅ |
-| invalidateQueries | ✅ |
+| `invalidateQueries` | ✅ |
 | Loading State | ✅ |
 | Error State | ✅ |
 | Empty State | ✅ |
 | Optimistic Updates | ✅ |
+| Optimistic Delete | ✅ |
+| Optimistic Toggle | ✅ |
 | Rollback | ✅ |
-| onMutate | ✅ |
-| onError | ✅ |
-| onSettled | ✅ |
+| `onMutate` | ✅ |
+| `onError` | ✅ |
+| `onSettled` | ✅ |
+| Query Cancellation | ✅ |
 | Server Synchronization | ✅ |
+| Server-State Management | ✅ |
 
 ---
 
 ## 🔄 Application Data Flow
 
-    React UI
-        ↓
-    TanStack Query
-        ↓
-    ┌─────────────────────┐
-    │                     │
-    ↓                     ↓
-    useQuery          useMutation
-    │                     │
-    ↓                     ↓
-    getTodos()      addTodo()
-                    deleteTodo()
-    │                     │
-    └──────────┬──────────┘
-               ↓
-             api.js
-               ↓
-         JSON Server
-               ↓
-            db.json
+```text
+                    React UI
+                       ↓
+                TanStack Query
+                       ↓
+              ┌────────┴────────┐
+              ↓                 ↓
+           useQuery         useMutation
+              ↓                 ↓
+         getTodos()       ┌─────┼──────────────┐
+                          ↓     ↓              ↓
+                      addTodo  updateTodo  deleteTodo
+                          │     │              │
+                          └─────┼──────────────┘
+                                ↓
+                           api.jsx
+                                ↓
+                         JSON Server
+                                ↓
+                            db.json
+```
 
 ---
 
 ## 📊 Server-State Flow
 
-The main server-state flow of the project is:
+### Standard Mutation Flow
 
-    Fetch
-      ↓
-    useQuery
-      ↓
-    Cache
-      ↓
-    User Mutation
-      ↓
-    Server Update
-      ↓
-    invalidateQueries
-      ↓
-    Refetch
-      ↓
-    Updated UI
+```text
+Fetch
+  ↓
+useQuery
+  ↓
+Query Cache
+  ↓
+User Mutation
+  ↓
+Server Update
+  ↓
+invalidateQueries
+  ↓
+Refetch
+  ↓
+Updated UI
+```
 
-For optimistic delete:
+### Optimistic Mutation Flow
 
-    Delete Click
+```text
+User Action
+    ↓
+onMutate
+    ↓
+Save Previous Cache
+    ↓
+Update Cache Immediately
+    ↓
+UI Updates Instantly
+    ↓
+Server Request
+    ↓
+┌───────────────┐
+│               │
+↓               ↓
+Success       Failure
+↓               ↓
+Keep Change   Rollback
+│               │
+└───────┬───────┘
         ↓
-    onMutate
+    onSettled
         ↓
-    Save Previous Cache
+invalidateQueries
         ↓
-    Update Cache Immediately
-        ↓
-    DELETE Request
-        ↓
-    ┌───────────────┐
-    │               │
-    ↓               ↓
-    Success       Failure
-    ↓               ↓
-    Keep Change   Rollback
-    │               │
-    └───────┬───────┘
-            ↓
-       onSettled
-            ↓
-    invalidateQueries
-            ↓
-       Server Sync
+Server Synchronization
+```
+
+---
+
+## 🧩 Client State vs Server State
+
+One of the important concepts practiced in this project is separating **client state** from **server state**.
+
+### Client State
+
+The task input is local component state:
+
+```js
+const [title, setTitle] = useState("");
+```
+
+It controls the form input.
+
+### Server State
+
+The Todo list is managed by TanStack Query:
+
+```js
+useQuery({
+  queryKey: ["todos"],
+  queryFn: getTodos,
+});
+```
+
+This separation prevents unnecessary duplication of server data inside React state.
 
 ---
 
 ## 🎯 Learning Outcome
 
-Through this project, I practiced server-state management in React using TanStack Query.
+Through this project, I practiced practical server-state management in React using TanStack Query.
 
-Instead of manually managing server data with multiple useState and useEffect implementations, TanStack Query was used to manage:
+The project helped me understand:
 
-- Server data fetching
-- Query caching
-- Mutations
-- Query invalidation
-- Server synchronization
-- Optimistic UI updates
-- Mutation error handling
-- Rollback behavior
-
-This project helped me understand how server state differs from normal client-side UI state and how TanStack Query simplifies server-state management in React applications.
+- How `useQuery` fetches and caches server data
+- How `useMutation` handles server-side changes
+- How query invalidation keeps data synchronized
+- How optimistic updates improve UI responsiveness
+- How rollback protects the UI when a mutation fails
+- How `onMutate`, `onError`, and `onSettled` work together
+- How API logic can be separated from UI components
+- How client state differs from server state
+- How query cancellation can prevent stale requests from interfering with updates
 
 ---
 
@@ -569,17 +847,18 @@ This project helped me understand how server state differs from normal client-si
 
 Possible future improvements include:
 
-- Edit Todo
-- Toggle Todo completion
-- Search Todos
-- Filter Todos
-- Pagination
-- Retry handling
+- Search tasks
+- Filter by All / Active / Completed
+- Edit task titles
+- Task priorities
+- Due dates
+- Categories
+- Pagination for larger datasets
 - TanStack Query Devtools
 - Authentication
-- Better mutation feedback
-
-These features were intentionally not implemented because the main goal of this phase was to focus on TanStack Query server-state concepts and optimistic mutations.
+- Improved toast-based mutation notifications
+- Production backend/API integration
+- Deployment
 
 ---
 
@@ -587,44 +866,52 @@ These features were intentionally not implemented because the main goal of this 
 
 Phase 10 has been completed successfully.
 
-The project successfully implements:
+The project demonstrates:
 
-    useQuery
-        ↓
-    useMutation
-        ↓
-    invalidateQueries
-        ↓
-    Optimistic Delete
-        ↓
-    Rollback
-        ↓
-    Server Synchronization
+```text
+useQuery
+    ↓
+Server-State Cache
+    ↓
+useMutation
+    ↓
+POST / PATCH / DELETE
+    ↓
+Optimistic Updates
+    ↓
+Rollback
+    ↓
+invalidateQueries
+    ↓
+Server Synchronization
+```
+
+The project successfully combines React UI state with TanStack Query server-state management.
 
 ---
 
 ## 👨‍💻 Project Details
 
-Project: Todo Server-State App
-
-Phase: 10
-
-Focus: React Server-State Management
-
-Frontend: React + Vite
-
-Server-State Library: TanStack Query
-
-Backend: JSON Server
-
-Language: JavaScript
+| Detail | Information |
+|---|---|
+| Project | TaskFlow — Todo Server-State App |
+| Phase | 10 |
+| Focus | React Server-State Management |
+| Frontend | React + Vite |
+| Language | JavaScript |
+| Styling | CSS |
+| Server-State Library | TanStack Query |
+| Backend | JSON Server |
+| API Style | REST API |
 
 ---
 
 ## ⭐ Conclusion
 
-This Phase 10 project demonstrates a practical approach to managing server state in a React application.
+TaskFlow demonstrates a practical approach to managing server state in a React application using TanStack Query.
 
-The application can fetch Todo data, add new Todos, delete Todos, synchronize the UI with the server, and perform optimistic updates with rollback handling.
+The application can fetch Todo data, create new tasks, update completion status, delete tasks, handle loading and error states, synchronize the UI with the server, and perform optimistic updates with rollback handling.
 
-The project provided practical experience with TanStack Query and demonstrated how server-state management can be handled efficiently without manually controlling every part of the server data inside React component state.
+The project provided hands-on experience with modern server-state patterns and demonstrated how TanStack Query can simplify data fetching, caching, mutations, and synchronization without manually managing the entire server dataset inside React component state.
+
+**Built with React ⚛️ + TanStack Query 🚀**

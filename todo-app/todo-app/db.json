@@ -13,7 +13,7 @@
     {
       "id": "3",
       "title": "Build Todo App",
-      "completed": true
+      "completed": false
     }
   ],
   "_note": "Phase 10 Todo App - JSON Server database"
