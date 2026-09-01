@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import AccessibleModal from "./components/AccessibleModal";
 import FavoriteButton from "./components/FavoriteButton";
 import FeedbackForm from "./components/FeedbackForm";
@@ -7,6 +7,9 @@ import "./App.css";
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [actionMessage, setActionMessage] = useState("");
+
+  const feedbackRef = useRef(null);
+  const topRef = useRef(null);
 
   function handleOpenModal() {
     setActionMessage("");
@@ -22,17 +25,42 @@ function App() {
     setActionMessage("Action confirmed successfully.");
   }
 
+  function handleFeedbackNavigation(event) {
+    event.preventDefault();
+
+    feedbackRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    requestAnimationFrame(() => {
+      feedbackRef.current?.focus();
+    });
+  }
+
+  function handleBrandNavigation(event) {
+    event.preventDefault();
+
+    topRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    requestAnimationFrame(() => {
+      topRef.current?.focus();
+    });
+  }
+
   return (
     <>
+      <div ref={topRef} tabIndex={-1} className="page-top-anchor" />
+
       <header className="site-header">
-        <nav
-          className="navbar"
-          aria-label="Main navigation"
-        >
+        <nav className="navbar" aria-label="Main navigation">
           <a
-            href="/"
+            href="#top"
             className="brand"
-            onClick={(event) => event.preventDefault()}
+            onClick={handleBrandNavigation}
           >
             <span className="brand-mark" aria-hidden="true">
               A
@@ -44,15 +72,23 @@ function App() {
             </span>
           </a>
 
-          <a href="#feedback" className="nav-link">
+          <a
+            href="#feedback"
+            className="nav-link"
+            onClick={handleFeedbackNavigation}
+          >
             Feedback
           </a>
         </nav>
       </header>
 
       <main>
-        <section className="hero" aria-labelledby="page-title">
+        <section
+          className="hero"
+          aria-labelledby="page-title"
+        >
           <div className="hero-content">
+            <p className="eyebrow">Accessibility</p>
 
             <h1 id="page-title">
               Build interfaces everyone can use.
@@ -96,7 +132,10 @@ function App() {
             className="hero-card"
             aria-label="Accessibility highlights"
           >
-            <div className="hero-card-icon" aria-hidden="true">
+            <div
+              className="hero-card-icon"
+              aria-hidden="true"
+            >
               ✓
             </div>
 
@@ -131,7 +170,9 @@ function App() {
           <ul className="feature-grid">
             <li className="feature-card">
               <span aria-hidden="true">01</span>
+
               <h3>Semantic HTML</h3>
+
               <p>
                 Meaningful landmarks and native interactive elements.
               </p>
@@ -139,7 +180,9 @@ function App() {
 
             <li className="feature-card">
               <span aria-hidden="true">02</span>
+
               <h3>Keyboard navigation</h3>
+
               <p>
                 Navigate and interact using Tab, Enter, Space, and Escape.
               </p>
@@ -147,7 +190,9 @@ function App() {
 
             <li className="feature-card">
               <span aria-hidden="true">03</span>
+
               <h3>Focus management</h3>
+
               <p>
                 Move focus deliberately when the modal opens and closes.
               </p>
@@ -155,7 +200,9 @@ function App() {
 
             <li className="feature-card">
               <span aria-hidden="true">04</span>
+
               <h3>Accessible forms</h3>
+
               <p>
                 Proper labels, controlled inputs, validation, and live status.
               </p>
@@ -182,13 +229,20 @@ function App() {
 
           <div className="favorite-demo">
             <span>Favorite this interaction</span>
+
             <FavoriteButton />
           </div>
         </section>
 
-        <div id="feedback">
+        <section
+          ref={feedbackRef}
+          id="feedback"
+          tabIndex={-1}
+          className="feedback-section-wrapper"
+          aria-labelledby="feedback-title"
+        >
           <FeedbackForm />
-        </div>
+        </section>
       </main>
 
       <footer className="site-footer">

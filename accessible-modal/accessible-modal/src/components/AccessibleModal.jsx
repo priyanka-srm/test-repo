@@ -19,6 +19,7 @@ function AccessibleModal({ isOpen, onClose, onConfirm }) {
 
     function handleKeyDown(event) {
       if (event.key === "Escape") {
+        event.preventDefault();
         onClose();
         return;
       }
@@ -47,12 +48,19 @@ function AccessibleModal({ isOpen, onClose, onConfirm }) {
       const firstElement = focusable[0];
       const lastElement = focusable[focusable.length - 1];
 
-      if (event.shiftKey && document.activeElement === firstElement) {
+      if (
+        event.shiftKey &&
+        document.activeElement === firstElement
+      ) {
         event.preventDefault();
         lastElement.focus();
+        return;
       }
 
-      if (!event.shiftKey && document.activeElement === lastElement) {
+      if (
+        !event.shiftKey &&
+        document.activeElement === lastElement
+      ) {
         event.preventDefault();
         firstElement.focus();
       }
@@ -89,14 +97,16 @@ function AccessibleModal({ isOpen, onClose, onConfirm }) {
       <section
         ref={modalRef}
         className="modal"
-        role="dialog"
+        role="alertdialog"
         aria-modal="true"
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
         <header className="modal-header">
           <div>
-            <p className="modal-eyebrow">Confirmation</p>
+            <p className="modal-eyebrow">
+              Confirmation
+            </p>
 
             <h2
               id="modal-title"
@@ -113,14 +123,16 @@ function AccessibleModal({ isOpen, onClose, onConfirm }) {
             onClick={onClose}
             aria-label="Close dialog"
           >
-            <span aria-hidden="true">×</span>
+            <span aria-hidden="true">
+              ×
+            </span>
           </button>
         </header>
 
         <div className="modal-body">
           <p id="modal-description">
-            Are you sure you want to continue? This action will be recorded
-            as completed.
+            Are you sure you want to continue? This action will be
+            recorded as completed.
           </p>
         </div>
 

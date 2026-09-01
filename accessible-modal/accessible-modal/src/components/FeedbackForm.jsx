@@ -6,7 +6,6 @@ function FeedbackForm() {
   const [message, setMessage] = useState("");
   const [subscribe, setSubscribe] = useState(false);
   const [status, setStatus] = useState("");
-
   const [errors, setErrors] = useState({});
 
   function validateForm() {
@@ -27,6 +26,19 @@ function FeedbackForm() {
     }
 
     return newErrors;
+  }
+
+  function clearFieldError(field) {
+    if (errors[field]) {
+      setErrors((current) => ({
+        ...current,
+        [field]: "",
+      }));
+    }
+
+    if (status) {
+      setStatus("");
+    }
   }
 
   function handleSubmit(event) {
@@ -55,16 +67,22 @@ function FeedbackForm() {
       aria-labelledby="feedback-title"
     >
       <div className="section-heading">
-        <div>
-          <p className="eyebrow">Practice</p>
+        <p className="eyebrow">Practice</p>
 
-          <h2 id="feedback-title">
-            Accessible feedback form
-          </h2>
-        </div>
+        <h2 id="feedback-title">
+          Accessible feedback form
+        </h2>
+
+        <p>
+          Share your feedback using this accessible, keyboard-friendly form.
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate>
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        aria-describedby="form-status"
+      >
         <div className="form-grid">
           <div className="form-field">
             <label htmlFor="name">
@@ -78,23 +96,22 @@ function FeedbackForm() {
               value={name}
               onChange={(event) => {
                 setName(event.target.value);
-
-                if (errors.name) {
-                  setErrors((current) => ({
-                    ...current,
-                    name: "",
-                  }));
-                }
+                clearFieldError("name");
               }}
               placeholder="Enter your name"
               autoComplete="name"
               required
               aria-invalid={Boolean(errors.name)}
-              aria-describedby={errors.name ? "name-error" : undefined}
+              aria-describedby={
+                errors.name ? "name-error" : undefined
+              }
             />
 
             {errors.name && (
-              <p id="name-error" className="field-error">
+              <p
+                id="name-error"
+                className="field-error"
+              >
                 {errors.name}
               </p>
             )}
@@ -102,7 +119,8 @@ function FeedbackForm() {
 
           <div className="form-field">
             <label htmlFor="email">
-              Email address <span aria-hidden="true">*</span>
+              Email address{" "}
+              <span aria-hidden="true">*</span>
             </label>
 
             <input
@@ -112,13 +130,7 @@ function FeedbackForm() {
               value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
-
-                if (errors.email) {
-                  setErrors((current) => ({
-                    ...current,
-                    email: "",
-                  }));
-                }
+                clearFieldError("email");
               }}
               placeholder="you@example.com"
               autoComplete="email"
@@ -130,7 +142,10 @@ function FeedbackForm() {
             />
 
             {errors.email && (
-              <p id="email-error" className="field-error">
+              <p
+                id="email-error"
+                className="field-error"
+              >
                 {errors.email}
               </p>
             )}
@@ -148,13 +163,7 @@ function FeedbackForm() {
             value={message}
             onChange={(event) => {
               setMessage(event.target.value);
-
-              if (errors.message) {
-                setErrors((current) => ({
-                  ...current,
-                  message: "",
-                }));
-              }
+              clearFieldError("message");
             }}
             placeholder="Write your feedback..."
             rows="4"
@@ -166,7 +175,10 @@ function FeedbackForm() {
           />
 
           {errors.message && (
-            <p id="message-error" className="field-error">
+            <p
+              id="message-error"
+              className="field-error"
+            >
               {errors.message}
             </p>
           )}
@@ -178,9 +190,13 @@ function FeedbackForm() {
             name="subscribe"
             type="checkbox"
             checked={subscribe}
-            onChange={(event) =>
-              setSubscribe(event.target.checked)
-            }
+            onChange={(event) => {
+              setSubscribe(event.target.checked);
+
+              if (status) {
+                setStatus("");
+              }
+            }}
           />
 
           <label htmlFor="subscribe">
@@ -188,7 +204,10 @@ function FeedbackForm() {
           </label>
         </div>
 
-        <button type="submit" className="primary-button">
+        <button
+          type="submit"
+          className="primary-button"
+        >
           Submit feedback
         </button>
 
