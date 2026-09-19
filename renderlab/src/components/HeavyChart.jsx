@@ -12,7 +12,7 @@ export default function HeavyChart() {
       <div
         className="chart"
         role="img"
-        aria-label="Bar chart showing varying performance measurements"q>
+        aria-label="Bar chart showing varying performance measurements">
         {bars.map((height, index) => (
           <div className="chart-column" key={index}>
             <div className="chart-bar" style={{ height: `${height}%` }} />
