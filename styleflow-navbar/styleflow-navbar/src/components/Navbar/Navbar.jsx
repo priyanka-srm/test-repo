@@ -1,35 +1,10 @@
 import { useEffect, useState } from "react";
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { navigationItems } from "../../data/navigation";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
+import styles from "./Navbar.module.css";
 const THEME_STORAGE_KEY = "styleflow-theme";
-const NAV_ITEMS = [
-  {
-    id: "home",
-    label: "Home",
-    href: "#home",
-  },
-  {
-    id: "features",
-    label: "Features",
-    href: "#features",
-  },
-  {
-    id: "components",
-    label: "Components",
-    href: "#components",
-  },
-  {
-    id: "about",
-    label: "About",
-    href: "#about",
-  },
-  {
-    id: "contact",
-    label: "Contact",
-    href: "#contact",
-  },
-];
 function getInitialTheme() {
   if (typeof window === "undefined") {
     return "light";
@@ -49,7 +24,7 @@ function getInitialActiveId() {
     return "home";
   }
   const currentHash = window.location.hash.replace("#", "");
-  const matchingItem = NAV_ITEMS.find((item) => item.id === currentHash);
+  const matchingItem = navigationItems.find((item) => item.id === currentHash);
   return matchingItem ? matchingItem.id : "home";
 }
 function Navbar() {
@@ -67,7 +42,7 @@ function Navbar() {
   useEffect(() => {
     const handleHashChange = () => {
       const hashId = window.location.hash.replace("#", "");
-      const matchingItem = NAV_ITEMS.find((item) => item.id === hashId);
+      const matchingItem = navigationItems.find((item) => item.id === hashId);
       setActiveId(matchingItem ? matchingItem.id : "home");
     };
     window.addEventListener("hashchange", handleHashChange);
@@ -82,22 +57,24 @@ function Navbar() {
     setActiveId(id);
   };
   return (
-    <header>
-      {isDesktop ? (
-        <DesktopNav
-          items={NAV_ITEMS}
-          theme={theme}
-          activeId={activeId}
-          onNavigate={handleNavigate}
-          onToggleTheme={handleThemeToggle}/>
-      ) : (
-        <MobileNav
-          items={NAV_ITEMS}
-          theme={theme}
-          activeId={activeId}
-          onNavigate={handleNavigate}
-          onToggleTheme={handleThemeToggle}/>
-      )}
+    <header className={styles.navbar}>
+      <div className={styles.inner}>
+        {isDesktop ? (
+          <DesktopNav
+            items={navigationItems}
+            theme={theme}
+            activeId={activeId}
+            onNavigate={handleNavigate}
+            onToggleTheme={handleThemeToggle}/>
+        ) : (
+          <MobileNav
+            items={navigationItems}
+            theme={theme}
+            activeId={activeId}
+            onNavigate={handleNavigate}
+            onToggleTheme={handleThemeToggle}/>
+        )}
+      </div>
     </header>
   );
 }

@@ -14,6 +14,9 @@ function TailwindBadge() {
         font-semibold
         text-cyan-800
         shadow-sm
+        md:px-4
+        md:py-2
+        md:text-base
       ">
       Tailwind CSS
     </span>
