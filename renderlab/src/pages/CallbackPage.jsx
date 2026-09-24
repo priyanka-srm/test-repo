@@ -1,8 +1,12 @@
-import { memo, useCallback, useMemo, useState } from "react";
+/* eslint-disable react-hooks/refs */
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import DemoCard from "../components/DemoCard";
 import RenderCount from "../components/RenderCount";
 import SectionHeader from "../components/SectionHeader";
 const ActionChild = memo(function ActionChild({ onAction }) {
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log("ActionChild rendered");
   return (
     <div className="callback-child">
       <div>
@@ -12,7 +16,7 @@ const ActionChild = memo(function ActionChild({ onAction }) {
           parent-driven renders.
         </p>
       </div>
-      <RenderCount label="Child renders" />
+      <RenderCount label="Child renders" value={renderCount.current} />
       <button
         type="button"
         className="button button-small button-secondary"
