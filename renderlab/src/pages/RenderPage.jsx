@@ -1,8 +1,12 @@
-import { memo, useEffect, useState } from "react";
+/* eslint-disable react-hooks/refs */
+import { memo, useEffect, useRef, useState } from "react";
 import DemoCard from "../components/DemoCard";
 import RenderCount from "../components/RenderCount";
 import SectionHeader from "../components/SectionHeader";
 function NormalChild({ label }) {
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log("NormalChild rendered");
   useEffect(() => {
     console.log("NormalChild mounted");
     return () => {
@@ -15,13 +19,16 @@ function NormalChild({ label }) {
         <strong>Normal child</strong>
         <p>Parent renders cause this child to render again.</p>
       </div>
-      <RenderCount />
+      <RenderCount value={renderCount.current} />
       <span className="result-tag result-tag-warning">Re-renders</span>
       <span className="sr-only">{label}</span>
     </div>
   );
 }
 const MemoChild = memo(function MemoChild({ label }) {
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log("MemoChild rendered");
   useEffect(() => {
     console.log("MemoChild mounted");
     return () => {
@@ -34,7 +41,7 @@ const MemoChild = memo(function MemoChild({ label }) {
         <strong>Memoized child</strong>
         <p>Same primitive prop → parent updates can be skipped.</p>
       </div>
-      <RenderCount />
+      <RenderCount value={renderCount.current} />
       <span className="result-tag result-tag-success">Memoized</span>
       <span className="sr-only">{label}</span>
     </div>
@@ -42,13 +49,16 @@ const MemoChild = memo(function MemoChild({ label }) {
 });
 function StatefulMemoChild() {
   const [count, setCount] = useState(0);
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log("StatefulMemoChild rendered");
   return (
     <div className="experiment-child">
       <div>
         <strong>Memo child with own state</strong>
         <p>memo does not block the component's own state updates.</p>
       </div>
-      <RenderCount />
+      <RenderCount value={renderCount.current} />
       <button
         type="button"
         className="button button-small button-secondary"
