@@ -1,5 +1,3 @@
-
-
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import App from "./App";
@@ -13,11 +11,15 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders the start testing button", () => {
+  test("renders the task board", () => {
     render(<App />);
 
     expect(
-      screen.getByRole("button", { name: "Start Testing" })
+      screen.getByRole("heading", { name: "Your tasks" })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", { name: "Add task" })
     ).toBeInTheDocument();
   });
 });
