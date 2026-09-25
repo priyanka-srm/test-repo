@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 
 const initialTasks = [
@@ -44,7 +44,28 @@ function App() {
   const [priority, setPriority] = useState("Medium");
   const [titleError, setTitleError] = useState("");
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
   const activeTasks = tasks.filter((task) => !task.completed).length;
+
+  const filteredTasks = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    return tasks.filter((task) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        task.title.toLowerCase().includes(normalizedSearch) ||
+        task.description.toLowerCase().includes(normalizedSearch);
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && !task.completed) ||
+        (statusFilter === "completed" && task.completed);
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [tasks, searchTerm, statusFilter]);
 
   function handleAddTask(event) {
     event.preventDefault();
@@ -208,62 +229,123 @@ function App() {
             </form>
           )}
 
-          <div className="task-list">
-            {tasks.map((task) => (
-              <article
-                key={task.id}
-                className={`task-card ${
-                  task.completed ? "is-completed" : ""
-                }`}
-              >
-                <div className="task-card-content">
-                  <div className="task-card-heading">
-                    <h3>{task.title}</h3>
+          <div className="task-controls">
+            <div className="form-field search-field">
+              <label htmlFor="task-search">Search tasks</label>
 
-                    <span
-                      className={`priority-badge priority-${task.priority.toLowerCase()}`}
-                    >
-                      {task.priority}
-                    </span>
+              <input
+                id="task-search"
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search by title or description"
+              />
+            </div>
+
+            <div className="filter-group">
+              <span id="task-filter-label">Filter tasks</span>
+
+              <div
+                className="filter-buttons"
+                aria-labelledby="task-filter-label"
+              >
+                <button
+                  type="button"
+                  className={statusFilter === "all" ? "is-active" : ""}
+                  aria-pressed={statusFilter === "all"}
+                  onClick={() => setStatusFilter("all")}
+                >
+                  All
+                </button>
+
+                <button
+                  type="button"
+                  className={statusFilter === "active" ? "is-active" : ""}
+                  aria-pressed={statusFilter === "active"}
+                  onClick={() => setStatusFilter("active")}
+                >
+                  Active
+                </button>
+
+                <button
+                  type="button"
+                  className={
+                    statusFilter === "completed" ? "is-active" : ""
+                  }
+                  aria-pressed={statusFilter === "completed"}
+                  onClick={() => setStatusFilter("completed")}
+                >
+                  Completed
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="task-list">
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((task) => (
+                <article
+                  key={task.id}
+                  className={`task-card ${
+                    task.completed ? "is-completed" : ""
+                  }`}
+                >
+                  <div className="task-card-content">
+                    <div className="task-card-heading">
+                      <h3>{task.title}</h3>
+
+                      <span
+                        className={`priority-badge priority-${task.priority.toLowerCase()}`}
+                      >
+                        {task.priority}
+                      </span>
+                    </div>
+
+                    <p>{task.description}</p>
                   </div>
 
-                  <p>{task.description}</p>
-                </div>
+                  <div className="task-card-status">
+                    <span
+                      aria-label={
+                        task.completed ? "Completed" : "Active"
+                      }
+                      className="task-status"
+                    >
+                      {task.completed ? "Completed" : "Active"}
+                    </span>
 
-                <div className="task-card-status">
-                  <span
-                    aria-label={
-                      task.completed ? "Completed" : "Active"
-                    }
-                    className="task-status"
-                  >
-                    {task.completed ? "Completed" : "Active"}
-                  </span>
+                    <button
+                      type="button"
+                      className="toggle-task-button"
+                      onClick={() => handleToggleTask(task.id)}
+                      aria-label={
+                        task.completed
+                          ? `Mark ${task.title} as active`
+                          : `Mark ${task.title} as complete`
+                      }
+                    >
+                      {task.completed ? "Mark active" : "Mark complete"}
+                    </button>
 
-                  <button
-                    type="button"
-                    className="toggle-task-button"
-                    onClick={() => handleToggleTask(task.id)}
-                    aria-label={
-                      task.completed
-                        ? `Mark ${task.title} as active`
-                        : `Mark ${task.title} as complete`
-                    }
-                  >
-                    {task.completed ? "Mark active" : "Mark complete"}
-                  </button>
-
-                  <button
-                    type="button"
-                    className="delete-task-button"
-                    onClick={() => handleDeleteTask(task.id)}
-                    aria-label={`Delete ${task.title}`}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </article>
-            ))}
+                    <button
+                      type="button"
+                      className="delete-task-button"
+                      onClick={() => handleDeleteTask(task.id)}
+                      aria-label={`Delete ${task.title}`}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div className="empty-state">
+                <h3>No matching tasks</h3>
+                <p>
+                  Try a different search term or change the task filter.
+                </p>
+              </div>
+            )}
           </div>
         </section>
       </main>

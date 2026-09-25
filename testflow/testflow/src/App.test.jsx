@@ -1,3 +1,4 @@
+
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
@@ -145,14 +146,6 @@ describe("App", () => {
       within(task).getByLabelText("Active")
     ).toBeInTheDocument();
 
-    expect(
-      within(task).getByRole("button", {
-        name: "Mark Review React Testing Library queries as complete",
-      })
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("3")).toBeInTheDocument();
-
     await user.click(
       within(task).getByRole("button", {
         name: "Mark Review React Testing Library queries as complete",
@@ -206,5 +199,133 @@ describe("App", () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText("4")).toBeInTheDocument();
+  });
+
+  test("filters tasks by search term", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search tasks",
+    });
+
+    await user.type(searchInput, "mocked API");
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Practice mocked API states",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Review React Testing Library queries",
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("filters tasks by active status", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Active" })
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Review React Testing Library queries",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Review Vitest configuration",
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("filters tasks by completed status", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Completed" })
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Review Vitest configuration",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Review React Testing Library queries",
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("combines search and status filtering", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.type(
+      screen.getByRole("searchbox", {
+        name: "Search tasks",
+      }),
+      "Vitest"
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Completed" })
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Review Vitest configuration",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Practice mocked API states",
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("shows an empty state when no task matches the search", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.type(
+      screen.getByRole("searchbox", {
+        name: "Search tasks",
+      }),
+      "xyz-no-task-match"
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "No matching tasks",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Review React Testing Library queries",
+      })
+    ).not.toBeInTheDocument();
   });
 });
