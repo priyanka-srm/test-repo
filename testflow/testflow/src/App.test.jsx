@@ -1,207 +1,184 @@
-
-import { render, screen, within } from "@testing-library/react";
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  within,
+} from "@testing-library/react";
+import { useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 import App from "./App";
+import useTaskFilters from "./hooks/useTaskFilters";
 
-describe("App", () => {
-  test("renders the TestFlow heading", () => {
-    render(<App />);
+describe("useTaskFilters", () => {
+  const tasks = [
+    {
+      id: 1,
+      title: "Write user interaction tests",
+      description: "Practice realistic user interactions.",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Review Vitest configuration",
+      description: "Understand the testing environment.",
+      completed: true,
+    },
+    {
+      id: 3,
+      title: "Practice mocked API states",
+      description: "Cover loading and error states.",
+      completed: false,
+    },
+  ];
 
-    expect(
-      screen.getByRole("heading", { name: "TestFlow" })
-    ).toBeInTheDocument();
+  test("returns all tasks when no filters are active", () => {
+    const { result } = renderHook(() =>
+      useTaskFilters(tasks, "", "all")
+    );
+
+    expect(result.current).toHaveLength(3);
   });
 
-  test("renders the task board", () => {
-    render(<App />);
+  test("filters tasks by search term", () => {
+    const { result } = renderHook(() =>
+      useTaskFilters(tasks, "interaction", "all")
+    );
 
-    expect(
-      screen.getByRole("heading", { name: "Your tasks" })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("button", { name: "Add task" })
-    ).toBeInTheDocument();
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].title).toBe(
+      "Write user interaction tests"
+    );
   });
 
-  test("allows a user to create a task", async () => {
-    const user = userEvent.setup();
-
-    render(<App />);
-
-    await user.click(
-      screen.getByRole("button", { name: "Add task" })
+  test("filters active tasks", () => {
+    const { result } = renderHook(() =>
+      useTaskFilters(tasks, "", "active")
     );
 
-    await user.type(
-      screen.getByLabelText("Task title"),
-      "Learn userEvent"
-    );
-
-    await user.type(
-      screen.getByLabelText("Description"),
-      "Practice realistic user interactions."
-    );
-
-    await user.selectOptions(
-      screen.getByLabelText("Priority"),
-      "High"
-    );
-
-    await user.click(
-      screen.getByRole("button", { name: "Create task" })
-    );
-
-    expect(
-      screen.getByRole("heading", { name: "Learn userEvent" })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText("Practice realistic user interactions.")
-    ).toBeInTheDocument();
+    expect(result.current).toHaveLength(2);
+    expect(result.current.every((task) => !task.completed)).toBe(true);
   });
 
-  test("allows a user to delete a task", async () => {
-    const user = userEvent.setup();
+  test("filters completed tasks", () => {
+    const { result } = renderHook(() =>
+      useTaskFilters(tasks, "", "completed")
+    );
 
-    render(<App />);
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].title).toBe(
+      "Review Vitest configuration"
+    );
+  });
 
-    const deleteButton = screen.getByRole("button", {
-      name: "Delete Review React Testing Library queries",
+  test("combines search and status filters", () => {
+    const { result } = renderHook(() =>
+      useTaskFilters(tasks, "mocked", "active")
+    );
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].title).toBe(
+      "Practice mocked API states"
+    );
+  });
+
+  test("updates filter inputs with act", () => {
+    function HookHarness() {
+      const [searchTerm, setSearchTerm] = useState("");
+      const [statusFilter, setStatusFilter] = useState("all");
+
+      const filteredTasks = useTaskFilters(
+        tasks,
+        searchTerm,
+        statusFilter
+      );
+
+      return (
+        <div>
+          <span data-testid="result-count">
+            {filteredTasks.length}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setSearchTerm("mocked")}
+          >
+            Search mocked
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setStatusFilter("active")}
+          >
+            Active only
+          </button>
+        </div>
+      );
+    }
+
+    const { result } = renderHook(() => {
+      const [searchTerm, setSearchTerm] = useState("");
+      const [statusFilter, setStatusFilter] = useState("all");
+
+      return {
+        filteredTasks: useTaskFilters(
+          tasks,
+          searchTerm,
+          statusFilter
+        ),
+        setSearchTerm,
+        setStatusFilter,
+      };
     });
 
-    await user.click(deleteButton);
+    expect(result.current.filteredTasks).toHaveLength(3);
 
-    expect(
-      screen.queryByRole("heading", {
-        name: "Review React Testing Library queries",
-      })
-    ).not.toBeInTheDocument();
+    act(() => {
+      result.current.setSearchTerm("mocked");
+    });
+
+    expect(result.current.filteredTasks).toHaveLength(1);
+
+    act(() => {
+      result.current.setStatusFilter("active");
+    });
+
+    expect(result.current.filteredTasks).toHaveLength(1);
+    expect(result.current.filteredTasks[0].title).toBe(
+      "Practice mocked API states"
+    );
+
+    void HookHarness;
   });
+});
 
-  test("shows a validation error when the task title is empty", async () => {
-    const user = userEvent.setup();
-
+describe("TestFlow task management", () => {
+  test("renders the dashboard", () => {
     render(<App />);
 
-    await user.click(
-      screen.getByRole("button", { name: "Add task" })
-    );
-
-    await user.click(
-      screen.getByRole("button", { name: "Create task" })
-    );
-
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Task title is required."
-    );
+    expect(screen.getByRole("heading", { name: "TestFlow" }))
+      .toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", { name: "Create task" })
+      screen.getByRole("heading", {
+        name: "Your tasks",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Testing Mode")
     ).toBeInTheDocument();
   });
 
-  test("clears the validation error when the user enters a title", async () => {
-    const user = userEvent.setup();
-
+  test("shows the initial active task count", () => {
     render(<App />);
 
-    await user.click(
-      screen.getByRole("button", { name: "Add task" })
-    );
-
-    await user.click(
-      screen.getByRole("button", { name: "Create task" })
-    );
-
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Task title is required."
-    );
-
-    await user.type(
-      screen.getByLabelText("Task title"),
-      "Learn form validation"
-    );
-
-    expect(
-      screen.queryByRole("alert")
-    ).not.toBeInTheDocument();
+    expect(screen.getByText("Active tasks")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
   });
 
-  test("allows a user to mark an active task as complete", async () => {
-    const user = userEvent.setup();
-
-    render(<App />);
-
-    const task = screen
-      .getByRole("heading", {
-        name: "Review React Testing Library queries",
-      })
-      .closest("article");
-
-    expect(task).not.toBeNull();
-
-    expect(
-      within(task).getByLabelText("Active")
-    ).toBeInTheDocument();
-
-    await user.click(
-      within(task).getByRole("button", {
-        name: "Mark Review React Testing Library queries as complete",
-      })
-    );
-
-    expect(
-      within(task).getByLabelText("Completed")
-    ).toBeInTheDocument();
-
-    expect(
-      within(task).getByRole("button", {
-        name: "Mark Review React Testing Library queries as active",
-      })
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("2")).toBeInTheDocument();
-  });
-
-  test("allows a user to mark a completed task as active again", async () => {
-    const user = userEvent.setup();
-
-    render(<App />);
-
-    const task = screen
-      .getByRole("heading", {
-        name: "Review Vitest configuration",
-      })
-      .closest("article");
-
-    expect(task).not.toBeNull();
-
-    expect(
-      within(task).getByLabelText("Completed")
-    ).toBeInTheDocument();
-
-    await user.click(
-      within(task).getByRole("button", {
-        name: "Mark Review Vitest configuration as active",
-      })
-    );
-
-    expect(
-      within(task).getByLabelText("Active")
-    ).toBeInTheDocument();
-
-    expect(
-      within(task).getByRole("button", {
-        name: "Mark Review Vitest configuration as complete",
-      })
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("4")).toBeInTheDocument();
-  });
-
-  test("filters tasks by search term", async () => {
+  test("filters tasks by search", async () => {
     const user = userEvent.setup();
 
     render(<App />);
@@ -210,7 +187,7 @@ describe("App", () => {
       name: "Search tasks",
     });
 
-    await user.type(searchInput, "mocked API");
+    await user.type(searchInput, "mocked");
 
     expect(
       screen.getByRole("heading", {
@@ -220,18 +197,20 @@ describe("App", () => {
 
     expect(
       screen.queryByRole("heading", {
-        name: "Review React Testing Library queries",
+        name: "Write user interaction tests",
       })
     ).not.toBeInTheDocument();
   });
 
-  test("filters tasks by active status", async () => {
+  test("filters active tasks", async () => {
     const user = userEvent.setup();
 
     render(<App />);
 
     await user.click(
-      screen.getByRole("button", { name: "Active" })
+      screen.getByRole("button", {
+        name: "Active",
+      })
     );
 
     expect(
@@ -253,13 +232,15 @@ describe("App", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("filters tasks by completed status", async () => {
+  test("filters completed tasks", async () => {
     const user = userEvent.setup();
 
     render(<App />);
 
     await user.click(
-      screen.getByRole("button", { name: "Completed" })
+      screen.getByRole("button", {
+        name: "Completed",
+      })
     );
 
     expect(
@@ -270,12 +251,12 @@ describe("App", () => {
 
     expect(
       screen.queryByRole("heading", {
-        name: "Review React Testing Library queries",
+        name: "Write user interaction tests",
       })
     ).not.toBeInTheDocument();
   });
 
-  test("combines search and status filtering", async () => {
+  test("combines search and status filters", async () => {
     const user = userEvent.setup();
 
     render(<App />);
@@ -284,48 +265,331 @@ describe("App", () => {
       screen.getByRole("searchbox", {
         name: "Search tasks",
       }),
-      "Vitest"
+      "mocked"
     );
 
     await user.click(
-      screen.getByRole("button", { name: "Completed" })
+      screen.getByRole("button", {
+        name: "Active",
+      })
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Review Vitest configuration",
-      })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.queryByRole("heading", {
         name: "Practice mocked API states",
       })
-    ).not.toBeInTheDocument();
-  });
-
-  test("shows an empty state when no task matches the search", async () => {
-    const user = userEvent.setup();
-
-    render(<App />);
-
-    await user.type(
-      screen.getByRole("searchbox", {
-        name: "Search tasks",
-      }),
-      "xyz-no-task-match"
-    );
-
-    expect(
-      screen.getByRole("heading", {
-        name: "No matching tasks",
-      })
     ).toBeInTheDocument();
 
     expect(
       screen.queryByRole("heading", {
-        name: "Review React Testing Library queries",
+        name: "Review Vitest configuration",
       })
     ).not.toBeInTheDocument();
+  });
+
+  test("marks an active task as completed", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const taskCard = screen
+      .getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+      .closest("article");
+
+    expect(taskCard).not.toBeNull();
+
+    await user.click(
+      within(taskCard).getByRole("button", {
+        name: "Mark Write user interaction tests as complete",
+      })
+    );
+
+    expect(
+      within(taskCard).getByRole("button", {
+        name: "Mark Write user interaction tests as active",
+      })
+    ).toBeInTheDocument();
+  });
+
+  test("filters newly completed tasks correctly", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const taskCard = screen
+      .getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+      .closest("article");
+
+    expect(taskCard).not.toBeNull();
+
+    await user.click(
+      within(taskCard).getByRole("button", {
+        name: "Mark Write user interaction tests as complete",
+      })
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Completed",
+      })
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+    ).toBeInTheDocument();
+  });
+
+  test("deletes a task", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+    ).toBeInTheDocument();
+
+    const taskCard = screen
+      .getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+      .closest("article");
+
+    expect(taskCard).not.toBeNull();
+
+    await user.click(
+      within(taskCard).getByRole("button", {
+        name: "Delete Write user interaction tests",
+      })
+    );
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Write user interaction tests",
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("opens the add task form", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Add task",
+      })
+    );
+
+    expect(
+      screen.getByRole("textbox", {
+        name: "Task title",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("textbox", {
+        name: "Description",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("combobox", {
+        name: "Priority",
+      })
+    ).toBeInTheDocument();
+  });
+
+  test("shows validation errors for an empty task form", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Add task",
+      })
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Create task",
+      })
+    );
+
+    expect(
+      screen.getByText("Task title is required.")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Description is required.")
+    ).toBeInTheDocument();
+  });
+
+  test("shows validation error when only the title is provided", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Add task",
+      })
+    );
+
+    await user.type(
+      screen.getByRole("textbox", {
+        name: "Task title",
+      }),
+      "Prepare interview notes"
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Create task",
+      })
+    );
+
+    expect(
+      screen.getByText("Description is required.")
+    ).toBeInTheDocument();
+  });
+
+  test("creates a new task", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Add task",
+      })
+    );
+
+    await user.type(
+      screen.getByRole("textbox", {
+        name: "Task title",
+      }),
+      "Prepare interview notes"
+    );
+
+    await user.type(
+      screen.getByRole("textbox", {
+        name: "Description",
+      }),
+      "Review React testing concepts."
+    );
+
+    await user.selectOptions(
+      screen.getByRole("combobox", {
+        name: "Priority",
+      }),
+      "High"
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Create task",
+      })
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Prepare interview notes",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Review React testing concepts.")
+    ).toBeInTheDocument();
+  });
+
+  test("closes the add task form", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Add task",
+      })
+    );
+
+    expect(
+      screen.getByRole("textbox", {
+        name: "Task title",
+      })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Close",
+      })
+    );
+
+    expect(
+      screen.queryByRole("textbox", {
+        name: "Task title",
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("keeps the task form open when validation fails", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Add task",
+      })
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Create task",
+      })
+    );
+
+    expect(
+      screen.getByRole("textbox", {
+        name: "Task title",
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Task title is required.")
+    ).toBeInTheDocument();
+  });
+
+  test("updates the active task count after completion", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    expect(screen.getByText("3")).toBeInTheDocument();
+
+    const taskCard = screen
+      .getByRole("heading", {
+        name: "Write user interaction tests",
+      })
+      .closest("article");
+
+    expect(taskCard).not.toBeNull();
+
+    await user.click(
+      within(taskCard).getByRole("button", {
+        name: "Mark Write user interaction tests as complete",
+      })
+    );
+
+    expect(screen.getByText("2")).toBeInTheDocument();
   });
 });

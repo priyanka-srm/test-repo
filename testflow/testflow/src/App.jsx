@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import useTaskFilters from "./hooks/useTaskFilters";
 import "./App.css";
 
 const initialTasks = [
@@ -39,50 +40,55 @@ const initialTasks = [
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
   const [isFormOpen, setIsFormOpen] = useState(false);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
+
   const [titleError, setTitleError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
   const activeTasks = tasks.filter((task) => !task.completed).length;
 
-  const filteredTasks = useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLowerCase();
-
-    return tasks.filter((task) => {
-      const matchesSearch =
-        !normalizedSearch ||
-        task.title.toLowerCase().includes(normalizedSearch) ||
-        task.description.toLowerCase().includes(normalizedSearch);
-
-      const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "active" && !task.completed) ||
-        (statusFilter === "completed" && task.completed);
-
-      return matchesSearch && matchesStatus;
-    });
-  }, [tasks, searchTerm, statusFilter]);
+  const filteredTasks = useTaskFilters(
+    tasks,
+    searchTerm,
+    statusFilter
+  );
 
   function handleAddTask(event) {
     event.preventDefault();
 
     const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+
+    let hasError = false;
 
     if (!trimmedTitle) {
       setTitleError("Task title is required.");
-      return;
+      hasError = true;
+    } else {
+      setTitleError("");
     }
 
-    setTitleError("");
+    if (!trimmedDescription) {
+      setDescriptionError("Description is required.");
+      hasError = true;
+    } else {
+      setDescriptionError("");
+    }
+
+    if (hasError) {
+      return;
+    }
 
     const newTask = {
       id: Date.now(),
       title: trimmedTitle,
-      description: description.trim(),
+      description: trimmedDescription,
       priority,
       completed: false,
     };
@@ -93,6 +99,7 @@ function App() {
     setDescription("");
     setPriority("Medium");
     setTitleError("");
+    setDescriptionError("");
     setIsFormOpen(false);
   }
 
@@ -102,6 +109,20 @@ function App() {
     if (titleError) {
       setTitleError("");
     }
+  }
+
+  function handleDescriptionChange(event) {
+    setDescription(event.target.value);
+
+    if (descriptionError) {
+      setDescriptionError("");
+    }
+  }
+
+  function handleFormToggle() {
+    setIsFormOpen((current) => !current);
+    setTitleError("");
+    setDescriptionError("");
   }
 
   function handleDeleteTask(taskId) {
@@ -160,13 +181,7 @@ function App() {
               <h2 id="tasks-heading">Your tasks</h2>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setIsFormOpen((current) => !current);
-                setTitleError("");
-              }}
-            >
+            <button type="button" onClick={handleFormToggle}>
               {isFormOpen ? "Close" : "Add task"}
             </button>
           </div>
@@ -205,10 +220,26 @@ function App() {
                 <textarea
                   id="task-description"
                   value={description}
-                  onChange={(event) => setDescription(event.target.value)}
+                  onChange={handleDescriptionChange}
                   placeholder="Describe the task"
                   rows="3"
+                  aria-invalid={Boolean(descriptionError)}
+                  aria-describedby={
+                    descriptionError
+                      ? "task-description-error"
+                      : undefined
+                  }
                 />
+
+                {descriptionError && (
+                  <p
+                    id="task-description-error"
+                    className="form-error"
+                    role="alert"
+                  >
+                    {descriptionError}
+                  </p>
+                )}
               </div>
 
               <div className="form-field">
