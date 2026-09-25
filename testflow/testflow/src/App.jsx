@@ -42,6 +42,7 @@ function App() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
+  const [titleError, setTitleError] = useState("");
 
   const activeTasks = tasks.filter((task) => !task.completed).length;
 
@@ -51,8 +52,11 @@ function App() {
     const trimmedTitle = title.trim();
 
     if (!trimmedTitle) {
+      setTitleError("Task title is required.");
       return;
     }
+
+    setTitleError("");
 
     const newTask = {
       id: Date.now(),
@@ -67,7 +71,16 @@ function App() {
     setTitle("");
     setDescription("");
     setPriority("Medium");
+    setTitleError("");
     setIsFormOpen(false);
+  }
+
+  function handleTitleChange(event) {
+    setTitle(event.target.value);
+
+    if (titleError) {
+      setTitleError("");
+    }
   }
 
   function handleDeleteTask(taskId) {
@@ -118,14 +131,17 @@ function App() {
 
             <button
               type="button"
-              onClick={() => setIsFormOpen((current) => !current)}
+              onClick={() => {
+                setIsFormOpen((current) => !current);
+                setTitleError("");
+              }}
             >
               {isFormOpen ? "Close" : "Add task"}
             </button>
           </div>
 
           {isFormOpen && (
-            <form className="task-form" onSubmit={handleAddTask}>
+            <form className="task-form" onSubmit={handleAddTask} noValidate>
               <div className="form-field">
                 <label htmlFor="task-title">Task title</label>
 
@@ -133,9 +149,23 @@ function App() {
                   id="task-title"
                   type="text"
                   value={title}
-                  onChange={(event) => setTitle(event.target.value)}
+                  onChange={handleTitleChange}
                   placeholder="Enter task title"
+                  aria-invalid={Boolean(titleError)}
+                  aria-describedby={
+                    titleError ? "task-title-error" : undefined
+                  }
                 />
+
+                {titleError && (
+                  <p
+                    id="task-title-error"
+                    className="form-error"
+                    role="alert"
+                  >
+                    {titleError}
+                  </p>
+                )}
               </div>
 
               <div className="form-field">
