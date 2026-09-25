@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 import App from "./App";
@@ -92,9 +92,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Create task" })
     );
 
-    expect(
-      screen.getByRole("alert")
-    ).toHaveTextContent("Task title is required.");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Task title is required."
+    );
 
     expect(
       screen.getByRole("button", { name: "Create task" })
@@ -114,9 +114,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Create task" })
     );
 
-    expect(
-      screen.getByRole("alert")
-    ).toHaveTextContent("Task title is required.");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Task title is required."
+    );
 
     await user.type(
       screen.getByLabelText("Task title"),
@@ -126,5 +126,85 @@ describe("App", () => {
     expect(
       screen.queryByRole("alert")
     ).not.toBeInTheDocument();
+  });
+
+  test("allows a user to mark an active task as complete", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const task = screen
+      .getByRole("heading", {
+        name: "Review React Testing Library queries",
+      })
+      .closest("article");
+
+    expect(task).not.toBeNull();
+
+    expect(
+      within(task).getByLabelText("Active")
+    ).toBeInTheDocument();
+
+    expect(
+      within(task).getByRole("button", {
+        name: "Mark Review React Testing Library queries as complete",
+      })
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("3")).toBeInTheDocument();
+
+    await user.click(
+      within(task).getByRole("button", {
+        name: "Mark Review React Testing Library queries as complete",
+      })
+    );
+
+    expect(
+      within(task).getByLabelText("Completed")
+    ).toBeInTheDocument();
+
+    expect(
+      within(task).getByRole("button", {
+        name: "Mark Review React Testing Library queries as active",
+      })
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("2")).toBeInTheDocument();
+  });
+
+  test("allows a user to mark a completed task as active again", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const task = screen
+      .getByRole("heading", {
+        name: "Review Vitest configuration",
+      })
+      .closest("article");
+
+    expect(task).not.toBeNull();
+
+    expect(
+      within(task).getByLabelText("Completed")
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(task).getByRole("button", {
+        name: "Mark Review Vitest configuration as active",
+      })
+    );
+
+    expect(
+      within(task).getByLabelText("Active")
+    ).toBeInTheDocument();
+
+    expect(
+      within(task).getByRole("button", {
+        name: "Mark Review Vitest configuration as complete",
+      })
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("4")).toBeInTheDocument();
   });
 });

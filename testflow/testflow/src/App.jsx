@@ -89,6 +89,16 @@ function App() {
     );
   }
 
+  function handleToggleTask(taskId) {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === taskId
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    );
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -229,6 +239,19 @@ function App() {
                   >
                     {task.completed ? "Completed" : "Active"}
                   </span>
+
+                  <button
+                    type="button"
+                    className="toggle-task-button"
+                    onClick={() => handleToggleTask(task.id)}
+                    aria-label={
+                      task.completed
+                        ? `Mark ${task.title} as active`
+                        : `Mark ${task.title} as complete`
+                    }
+                  >
+                    {task.completed ? "Mark active" : "Mark complete"}
+                  </button>
 
                   <button
                     type="button"
