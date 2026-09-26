@@ -27,6 +27,13 @@
       "completed": false,
       "priority": "High",
       "id": "TvKLkR6Pw0c"
+    },
+    {
+      "title": "One command test",
+      "description": "Testing React and JSON Server startup together.",
+      "completed": false,
+      "priority": "High",
+      "id": "jh-U9Vn591E"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
