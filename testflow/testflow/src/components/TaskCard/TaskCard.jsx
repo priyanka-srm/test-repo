@@ -19,7 +19,8 @@ function TaskCard({ task }) {
       <div className="task-card-status">
         <span
           className="task-status"
-          aria-label={task.completed ? "Completed" : "Active"}>
+          aria-label={task.completed ? "Completed" : "Active"}
+        >
           {task.completed ? "Completed" : "Active"}
         </span>
       </div>

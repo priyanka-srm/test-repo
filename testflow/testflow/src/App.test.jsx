@@ -1,21 +1,10 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
-import {
-  beforeEach,
-  describe,
-  expect,
-  test,
-  vi,
-} from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import App from "./App";
 import useTaskFilters from "./hooks/useTaskFilters";
-import {
-  createTask,
-  deleteTask,
-  getTasks,
-  updateTask,
-} from "./data/tasks";
+import { createTask, deleteTask, getTasks, updateTask } from "./data/tasks";
 
 vi.mock("./data/tasks", () => ({
   getTasks: vi.fn(),
@@ -80,34 +69,24 @@ describe("useTaskFilters", () => {
 
     render(<Wrapper />);
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     expect(
       screen.getByText("Write user interaction tests"),
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Document testing strategy"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Document testing strategy")).toBeInTheDocument();
   });
 
   test("filters tasks by title search", () => {
     function Wrapper() {
       const [search, setSearch] = useState("");
 
-      const filteredTasks = useTaskFilters(
-        mockTasks,
-        search,
-        "all",
-      );
+      const filteredTasks = useTaskFilters(mockTasks, search, "all");
 
       return (
         <>
-          <button onClick={() => setSearch("interaction")}>
-            Search
-          </button>
+          <button onClick={() => setSearch("interaction")}>Search</button>
 
           <ul>
             {filteredTasks.map((task) => (
@@ -120,9 +99,7 @@ describe("useTaskFilters", () => {
 
     render(<Wrapper />);
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     act(() => {
       screen.getByRole("button", { name: "Search" }).click();
@@ -156,9 +133,7 @@ describe("useTaskFilters", () => {
 
     render(<Wrapper />);
 
-    expect(
-      screen.getByText("Document testing strategy"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Document testing strategy")).toBeInTheDocument();
 
     expect(
       screen.queryByText("Review Vitest configuration"),
@@ -167,11 +142,7 @@ describe("useTaskFilters", () => {
 
   test("filters active tasks", () => {
     function Wrapper() {
-      const filteredTasks = useTaskFilters(
-        mockTasks,
-        "",
-        "active",
-      );
+      const filteredTasks = useTaskFilters(mockTasks, "", "active");
 
       return (
         <ul>
@@ -188,9 +159,7 @@ describe("useTaskFilters", () => {
       screen.getByText("Write user interaction tests"),
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Document testing strategy"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Document testing strategy")).toBeInTheDocument();
 
     expect(
       screen.queryByText("Review Vitest configuration"),
@@ -199,11 +168,7 @@ describe("useTaskFilters", () => {
 
   test("filters completed tasks", () => {
     function Wrapper() {
-      const filteredTasks = useTaskFilters(
-        mockTasks,
-        "",
-        "completed",
-      );
+      const filteredTasks = useTaskFilters(mockTasks, "", "completed");
 
       return (
         <ul>
@@ -216,9 +181,7 @@ describe("useTaskFilters", () => {
 
     render(<Wrapper />);
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     expect(
       screen.queryByText("Write user interaction tests"),
@@ -234,11 +197,7 @@ describe("useTaskFilters", () => {
       const [search, setSearch] = useState("");
       const [status, setStatus] = useState("all");
 
-      const filteredTasks = useTaskFilters(
-        mockTasks,
-        search,
-        status,
-      );
+      const filteredTasks = useTaskFilters(mockTasks, search, status);
 
       return (
         <>
@@ -246,13 +205,9 @@ describe("useTaskFilters", () => {
             Search interaction
           </button>
 
-          <button onClick={() => setSearch("")}>
-            Clear search
-          </button>
+          <button onClick={() => setSearch("")}>Clear search</button>
 
-          <button onClick={() => setStatus("completed")}>
-            Show completed
-          </button>
+          <button onClick={() => setStatus("completed")}>Show completed</button>
 
           <ul>
             {filteredTasks.map((task) => (
@@ -269,9 +224,7 @@ describe("useTaskFilters", () => {
       screen.getByText("Write user interaction tests"),
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     act(() => {
       screen
@@ -297,9 +250,7 @@ describe("useTaskFilters", () => {
         .click();
     });
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     act(() => {
       screen
@@ -309,9 +260,7 @@ describe("useTaskFilters", () => {
         .click();
     });
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     expect(
       screen.queryByText("Write user interaction tests"),
@@ -381,13 +330,9 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    expect(
-      screen.getByLabelText("Task title"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Task title")).toBeInTheDocument();
 
-    expect(
-      screen.getByLabelText("Description"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Description")).toBeInTheDocument();
   });
 
   test("validates required task title", async () => {
@@ -409,9 +354,7 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    expect(
-      screen.getByText("Task title is required."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Task title is required.")).toBeInTheDocument();
   });
 
   test("validates required task description", async () => {
@@ -427,10 +370,7 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    await user.type(
-      screen.getByLabelText("Task title"),
-      "New task",
-    );
+    await user.type(screen.getByLabelText("Task title"), "New task");
 
     await user.click(
       screen.getByRole("button", {
@@ -438,9 +378,7 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    expect(
-      screen.getByText("Description is required."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Description is required.")).toBeInTheDocument();
   });
 
   test("creates a task from the add task form", async () => {
@@ -456,10 +394,7 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    await user.type(
-      screen.getByLabelText("Task title"),
-      "New task",
-    );
+    await user.type(screen.getByLabelText("Task title"), "New task");
 
     await user.type(
       screen.getByLabelText("Description"),
@@ -498,10 +433,7 @@ describe("TestFlow task management", () => {
       "Test createTask API interaction.",
     );
 
-    await user.selectOptions(
-      screen.getByLabelText("Priority"),
-      "High",
-    );
+    await user.selectOptions(screen.getByLabelText("Priority"), "High");
 
     await user.click(
       screen.getByRole("button", {
@@ -548,10 +480,7 @@ describe("TestFlow task management", () => {
       "Check created task rendering.",
     );
 
-    await user.selectOptions(
-      screen.getByLabelText("Priority"),
-      "High",
-    );
+    await user.selectOptions(screen.getByLabelText("Priority"), "High");
 
     await user.click(
       screen.getByRole("button", {
@@ -564,9 +493,7 @@ describe("TestFlow task management", () => {
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText(
-        "Check created task rendering.",
-      ),
+      screen.getByText("Check created task rendering."),
     ).toBeInTheDocument();
   });
 
@@ -583,9 +510,7 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    expect(
-      screen.getByLabelText("Task title"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Task title")).toBeInTheDocument();
 
     await user.click(
       screen.getByRole("button", {
@@ -593,9 +518,7 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    expect(
-      screen.queryByLabelText("Task title"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Task title")).not.toBeInTheDocument();
   });
 
   test("toggles task completion", async () => {
@@ -667,9 +590,7 @@ describe("TestFlow task management", () => {
   test("rolls back task completion when update fails", async () => {
     const user = userEvent.setup();
 
-    updateTask.mockRejectedValue(
-      new Error("Update failed"),
-    );
+    updateTask.mockRejectedValue(new Error("Update failed"));
 
     render(<App />);
 
@@ -745,9 +666,7 @@ describe("TestFlow task management", () => {
   test("rolls back task deletion when delete fails", async () => {
     const user = userEvent.setup();
 
-    deleteTask.mockRejectedValue(
-      new Error("Delete failed"),
-    );
+    deleteTask.mockRejectedValue(new Error("Delete failed"));
 
     render(<App />);
 
@@ -760,9 +679,7 @@ describe("TestFlow task management", () => {
     );
 
     expect(
-      await screen.findByText(
-        "Write user interaction tests",
-      ),
+      await screen.findByText("Write user interaction tests"),
     ).toBeInTheDocument();
   });
 
@@ -773,9 +690,7 @@ describe("TestFlow task management", () => {
 
     await screen.findByText("Review Vitest configuration");
 
-    const searchInput = screen.getByPlaceholderText(
-      /search/i,
-    );
+    const searchInput = screen.getByPlaceholderText(/search/i);
 
     await user.type(searchInput, "interaction");
 
@@ -821,14 +736,9 @@ describe("TestFlow task management", () => {
       name: "Filter by status",
     });
 
-    await user.selectOptions(
-      statusSelect,
-      "completed",
-    );
+    await user.selectOptions(statusSelect, "completed");
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
     expect(
       screen.queryByText("Write user interaction tests"),
@@ -840,9 +750,7 @@ describe("TestFlow task management", () => {
 
     await screen.findByText("Review Vitest configuration");
 
-    expect(
-      screen.getByText("Active tasks"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Active tasks")).toBeInTheDocument();
 
     expect(
       screen.getByText("2", {
@@ -852,23 +760,15 @@ describe("TestFlow task management", () => {
   });
 
   test("shows API error state when task loading fails", async () => {
-    getTasks.mockRejectedValue(
-      new Error("Network error"),
-    );
+    getTasks.mockRejectedValue(new Error("Network error"));
 
     render(<App />);
 
-    expect(
-      await screen.findByRole("alert"),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Unable to load tasks"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Unable to load tasks")).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Unable to load tasks."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Unable to load tasks.")).toBeInTheDocument();
   });
 
   test("shows empty state when API returns no tasks", async () => {
@@ -876,14 +776,10 @@ describe("TestFlow task management", () => {
 
     render(<App />);
 
-    expect(
-      await screen.findByText("No tasks found"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("No tasks found")).toBeInTheDocument();
 
     expect(
-      screen.getByText(
-        "Try changing your search or status filter.",
-      ),
+      screen.getByText("Try changing your search or status filter."),
     ).toBeInTheDocument();
   });
 
@@ -900,14 +796,9 @@ describe("TestFlow task management", () => {
       }),
     );
 
-    const prioritySelect = screen.getByLabelText(
-      "Priority",
-    );
+    const prioritySelect = screen.getByLabelText("Priority");
 
-    await user.selectOptions(
-      prioritySelect,
-      "High",
-    );
+    await user.selectOptions(prioritySelect, "High");
 
     expect(prioritySelect).toHaveValue("High");
   });
@@ -919,9 +810,7 @@ describe("TestFlow task management", () => {
 
     await screen.findByText("Review Vitest configuration");
 
-    const searchInput = screen.getByPlaceholderText(
-      /search/i,
-    );
+    const searchInput = screen.getByPlaceholderText(/search/i);
 
     await user.type(searchInput, "important user");
 
@@ -941,18 +830,11 @@ describe("TestFlow task management", () => {
 
     await screen.findByText("Review Vitest configuration");
 
-    const searchInput = screen.getByPlaceholderText(
-      /search/i,
-    );
+    const searchInput = screen.getByPlaceholderText(/search/i);
 
-    await user.type(
-      searchInput,
-      "something-that-does-not-exist",
-    );
+    await user.type(searchInput, "something-that-does-not-exist");
 
-    expect(
-      await screen.findByText("No tasks found"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("No tasks found")).toBeInTheDocument();
   });
 
   test("supports switching back to all tasks", async () => {
@@ -966,27 +848,17 @@ describe("TestFlow task management", () => {
       name: "Filter by status",
     });
 
-    await user.selectOptions(
-      statusSelect,
-      "completed",
-    );
+    await user.selectOptions(statusSelect, "completed");
 
-    expect(
-      screen.getByText("Review Vitest configuration"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Review Vitest configuration")).toBeInTheDocument();
 
-    await user.selectOptions(
-      statusSelect,
-      "all",
-    );
+    await user.selectOptions(statusSelect, "all");
 
     expect(
       screen.getByText("Write user interaction tests"),
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Document testing strategy"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Document testing strategy")).toBeInTheDocument();
   });
 
   test("matches the task dashboard snapshot", async () => {

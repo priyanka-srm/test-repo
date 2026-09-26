@@ -10,9 +10,7 @@ function TaskList({ tasks }) {
 
         <h3>No tasks found</h3>
 
-        <p>
-          There are no tasks matching your current view.
-        </p>
+        <p>There are no tasks matching your current view.</p>
       </div>
     );
   }
