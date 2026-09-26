@@ -1,0 +1,244 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TestFlow task management > matches the task dashboard snapshot 1`] = `
+<div
+  class="app-shell"
+>
+  <header
+    class="app-header"
+  >
+    <div>
+      <p
+        class="eyebrow"
+      >
+        REACT TESTING LAB
+      </p>
+      <h1>
+        TestFlow
+      </h1>
+    </div>
+    <span
+      class="status-badge"
+    >
+      Testing Mode
+    </span>
+  </header>
+  <main
+    class="dashboard"
+  >
+    <section
+      class="hero-section"
+    >
+      <div>
+        <p
+          class="section-label"
+        >
+          TEAM WORKBOARD
+        </p>
+        <h2>
+          Test your workflow with confidence.
+        </h2>
+        <p
+          class="hero-description"
+        >
+          A practical React task manager built to explore component testing, user interactions, API states, and custom hooks.
+        </p>
+      </div>
+      <div
+        class="hero-stat"
+      >
+        <span>
+          Active tasks
+        </span>
+        <strong>
+          2
+        </strong>
+      </div>
+    </section>
+    <section
+      aria-labelledby="tasks-heading"
+      class="task-section"
+    >
+      <div
+        class="section-heading"
+      >
+        <div>
+          <p
+            class="section-label"
+          >
+            WORKBOARD
+          </p>
+          <h2
+            id="tasks-heading"
+          >
+            Your tasks
+          </h2>
+        </div>
+        <button
+          type="button"
+        >
+          Add task
+        </button>
+      </div>
+      <div
+        class="filters"
+      >
+        <label
+          for="task-search"
+        >
+          Search tasks
+        </label>
+        <input
+          id="task-search"
+          placeholder="Search tasks..."
+          type="search"
+          value=""
+        />
+        <label
+          for="task-status"
+        >
+          Filter by status
+        </label>
+        <select
+          id="task-status"
+        >
+          <option
+            value="all"
+          >
+            All tasks
+          </option>
+          <option
+            value="active"
+          >
+            Active
+          </option>
+          <option
+            value="completed"
+          >
+            Completed
+          </option>
+        </select>
+      </div>
+      <div
+        class="task-list"
+      >
+        <article
+          class="task-card task-card-completed"
+        >
+          <div
+            class="task-card-content"
+          >
+            <div
+              class="task-title-row"
+            >
+              <input
+                aria-label="Mark Review Vitest configuration as active"
+                checked=""
+                type="checkbox"
+              />
+              <h3>
+                Review Vitest configuration
+              </h3>
+            </div>
+            <p>
+              Check the current test setup.
+            </p>
+          </div>
+          <div
+            class="task-actions"
+          >
+            <button
+              aria-label="Mark Review Vitest configuration as active"
+              type="button"
+            >
+              Mark active
+            </button>
+            <button
+              aria-label="Delete Review Vitest configuration"
+              type="button"
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+        <article
+          class="task-card "
+        >
+          <div
+            class="task-card-content"
+          >
+            <div
+              class="task-title-row"
+            >
+              <input
+                aria-label="Mark Write user interaction tests as completed"
+                type="checkbox"
+              />
+              <h3>
+                Write user interaction tests
+              </h3>
+            </div>
+            <p>
+              Cover important user workflows.
+            </p>
+          </div>
+          <div
+            class="task-actions"
+          >
+            <button
+              aria-label="Mark Write user interaction tests as complete"
+              type="button"
+            >
+              Complete
+            </button>
+            <button
+              aria-label="Delete Write user interaction tests"
+              type="button"
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+        <article
+          class="task-card "
+        >
+          <div
+            class="task-card-content"
+          >
+            <div
+              class="task-title-row"
+            >
+              <input
+                aria-label="Mark Document testing strategy as completed"
+                type="checkbox"
+              />
+              <h3>
+                Document testing strategy
+              </h3>
+            </div>
+            <p>
+              Add notes about the testing approach.
+            </p>
+          </div>
+          <div
+            class="task-actions"
+          >
+            <button
+              aria-label="Mark Document testing strategy as complete"
+              type="button"
+            >
+              Complete
+            </button>
+            <button
+              aria-label="Delete Document testing strategy"
+              type="button"
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</div>
+`;

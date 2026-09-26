@@ -6,7 +6,7 @@ export async function getTasks({ signal } = {}) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch tasks");
+    throw new Error("Failed to fetch tasks.");
   }
 
   return response.json();
@@ -22,7 +22,7 @@ export async function createTask(task) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create task");
+    throw new Error("Failed to create task.");
   }
 
   return response.json();
@@ -38,7 +38,7 @@ export async function updateTask(id, updates) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to update task");
+    throw new Error("Failed to update task.");
   }
 
   return response.json();
@@ -50,7 +50,7 @@ export async function deleteTask(id) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to delete task");
+    throw new Error("Failed to delete task.");
   }
 
   return response.json();

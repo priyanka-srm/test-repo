@@ -1,0 +1,33 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Review Vitest configuration",
+      "description": "Check the testing setup and coverage.",
+      "completed": false,
+      "priority": "high"
+    },
+    {
+      "id": "2",
+      "title": "Write interaction tests",
+      "description": "Cover important user workflows.",
+      "completed": false,
+      "priority": "medium"
+    },
+    {
+      "id": "3",
+      "title": "Document testing strategy",
+      "description": "Add notes about the testing approach.",
+      "completed": false,
+      "priority": "low"
+    },
+    {
+      "title": "Test task creation workflow",
+      "description": "Verify that users can create a new task, submit the form successfully, and see the newly created task immediately in the workboard.",
+      "completed": false,
+      "priority": "High",
+      "id": "TvKLkR6Pw0c"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

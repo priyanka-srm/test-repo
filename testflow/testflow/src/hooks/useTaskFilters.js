@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-function useTaskFilters(tasks, searchTerm, statusFilter) {
+function useTaskFilters(tasks, search = "", status = "all") {
   return useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const normalizedSearch = search.trim().toLowerCase();
 
     return tasks.filter((task) => {
       const matchesSearch =
@@ -11,13 +11,13 @@ function useTaskFilters(tasks, searchTerm, statusFilter) {
         task.description.toLowerCase().includes(normalizedSearch);
 
       const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "active" && !task.completed) ||
-        (statusFilter === "completed" && task.completed);
+        status === "all" ||
+        (status === "active" && !task.completed) ||
+        (status === "completed" && task.completed);
 
       return matchesSearch && matchesStatus;
     });
-  }, [tasks, searchTerm, statusFilter]);
+  }, [tasks, search, status]);
 }
 
 export default useTaskFilters;
