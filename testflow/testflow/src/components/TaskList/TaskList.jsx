@@ -1,6 +1,6 @@
 import TaskCard from "../TaskCard/TaskCard";
 
-function TaskList({ tasks }) {
+function TaskList({ tasks, onToggle, onDelete }) {
   if (tasks.length === 0) {
     return (
       <div className="empty-state">
@@ -18,7 +18,12 @@ function TaskList({ tasks }) {
   return (
     <div className="task-list">
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+        <TaskCard
+          key={task.id}
+          task={task}
+          onToggle={onToggle}
+          onDelete={onDelete}
+        />
       ))}
     </div>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createTask, deleteTask, getTasks, updateTask } from "./data/tasks";
+import TaskList from "./components/TaskList/TaskList";
 import useTaskFilters from "./hooks/useTaskFilters";
 import "./App.css";
 
@@ -249,53 +250,11 @@ function App() {
           )}
 
           {!isLoading && !error && filteredTasks.length > 0 && (
-            <div className="task-list">
-              {filteredTasks.map((task) => (
-                <article
-                  className={`task-card ${
-                    task.completed ? "task-card-completed" : ""
-                  }`}
-                  key={task.id}
-                >
-                  <div className="task-card-content">
-                    <div className="task-title-row">
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => handleToggleTask(task)}
-                        aria-label={`Mark ${task.title} as ${
-                          task.completed ? "active" : "completed"
-                        }`}
-                      />
-
-                      <h3>{task.title}</h3>
-                    </div>
-
-                    <p>{task.description}</p>
-                  </div>
-
-                  <div className="task-actions">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleTask(task)}
-                      aria-label={`Mark ${task.title} as ${
-                        task.completed ? "active" : "complete"
-                      }`}
-                    >
-                      {task.completed ? "Mark active" : "Complete"}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteTask(task.id)}
-                      aria-label={`Delete ${task.title}`}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <TaskList
+              tasks={filteredTasks}
+              onToggle={handleToggleTask}
+              onDelete={handleDeleteTask}
+            />
           )}
         </section>
       </main>

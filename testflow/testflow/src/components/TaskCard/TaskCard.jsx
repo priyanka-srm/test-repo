@@ -1,4 +1,4 @@
-function TaskCard({ task }) {
+function TaskCard({ task, onToggle, onDelete }) {
   const priorityLabel =
     task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
 
@@ -6,7 +6,18 @@ function TaskCard({ task }) {
     <article className={`task-card ${task.completed ? "is-completed" : ""}`}>
       <div className="task-card-content">
         <div className="task-card-heading">
-          <h3>{task.title}</h3>
+          <div className="task-title-row">
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => onToggle(task)}
+              aria-label={`Mark ${task.title} as ${
+                task.completed ? "active" : "completed"
+              }`}
+            />
+
+            <h3>{task.title}</h3>
+          </div>
 
           <span className={`priority-badge priority-${task.priority}`}>
             {priorityLabel}
@@ -23,6 +34,26 @@ function TaskCard({ task }) {
         >
           {task.completed ? "Completed" : "Active"}
         </span>
+
+        <div className="task-actions">
+          <button
+            type="button"
+            onClick={() => onToggle(task)}
+            aria-label={`Mark ${task.title} as ${
+              task.completed ? "active" : "complete"
+            }`}
+          >
+            {task.completed ? "Mark active" : "Complete"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onDelete(task.id)}
+            aria-label={`Delete ${task.title}`}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </article>
   );
