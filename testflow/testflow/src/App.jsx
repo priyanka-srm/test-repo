@@ -20,11 +20,15 @@ function App() {
 
   const [formError, setFormError] = useState("");
 
+  const effectLabel = search;
+
   useEffect(() => {
     const controller = new AbortController();
 
     async function loadTasks() {
       try {
+        console.log(effectLabel);
+
         setIsLoading(true);
         setError("");
 
@@ -49,7 +53,7 @@ function App() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [effectLabel]);
 
   const filteredTasks = useTaskFilters(tasks, search, status);
 
