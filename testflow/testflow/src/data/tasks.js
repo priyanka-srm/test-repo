@@ -1,9 +1,15 @@
-const API_URL = "http://localhost:3000/tasks";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "VITE_API_URL is not configured. Check your environment file.",
+  );
+}
+
+const API_URL = `${API_BASE_URL.replace(/\/+$/, "")}/tasks`;
 
 export async function getTasks({ signal } = {}) {
-  const response = await fetch(API_URL, {
-    signal,
-  });
+  const response = await fetch(API_URL, { signal });
 
   if (!response.ok) {
     throw new Error("Failed to fetch tasks");
@@ -52,6 +58,4 @@ export async function deleteTask(id) {
   if (!response.ok) {
     throw new Error("Failed to delete task");
   }
-
-  return response.json();
 }
