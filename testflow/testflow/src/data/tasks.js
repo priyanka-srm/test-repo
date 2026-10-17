@@ -18,6 +18,23 @@ export async function getTasks({ signal } = {}) {
   return response.json();
 }
 
+// Fetch one task using its ID.
+export async function getTask(id, { signal } = {}) {
+  const response = await fetch(`${API_URL}/${encodeURIComponent(id)}`, {
+    signal,
+  });
+
+  if (response.status === 404) {
+    throw new Error("Task not found");
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch task");
+  }
+
+  return response.json();
+}
+
 export async function createTask(task) {
   const response = await fetch(API_URL, {
     method: "POST",
