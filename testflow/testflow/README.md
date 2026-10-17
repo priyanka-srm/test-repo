@@ -1,30 +1,16 @@
 # TestFlow
 
-
-
 A practical React task management application built as part of a React Testing Lab to explore component testing, user interactions, API states, custom hooks, accessibility, code quality, and reliable UI workflows.
-
-
 
 ## 🚀 Overview
 
-
-
 TestFlow is a React-based task management application designed to demonstrate how a modern React application can be tested from both component and user-interaction perspectives.
-
-
 
 The application provides a practical workboard where users can create, search, filter, complete, and delete tasks. It also handles loading, error, empty, validation, and rollback states to simulate realistic application behavior.
 
-
-
 The main goal of this project is not only to build the application, but also to understand how to write meaningful tests for real user workflows and application states.
 
-
-
 ## ✨ Features
-
-
 
 - View tasks in a responsive workboard
 
@@ -82,11 +68,7 @@ The main goal of this project is not only to build the application, but also to 
 
 - Production build verification
 
-
-
 ## 🛠️ Tech Stack
-
-
 
 - React
 
@@ -111,8 +93,6 @@ The main goal of this project is not only to build the application, but also to 
 - ESLint Plugin React Hooks
 
 - Prettier
-
-
 
 ## 📁 Project Structure
 
@@ -174,23 +154,13 @@ testflow/
 
 ## 🧩 Application Architecture
 
-
-
 TestFlow separates the main responsibilities of the application into different areas.
-
-
 
 ### App Component
 
-
-
 `App.jsx` manages the main task dashboard and user interactions.
 
-
-
 It handles:
-
-
 
 - Loading tasks
 
@@ -214,31 +184,17 @@ It handles:
 
 - Handling optimistic UI updates and rollback behavior
 
-
-
 ### TaskList Component
-
-
 
 `TaskList.jsx` is responsible for rendering the task collection.
 
-
-
 It receives the filtered tasks and task action handlers from `App.jsx` and renders each task using the reusable `TaskCard` component.
-
-
 
 ### TaskCard Component
 
-
-
 `TaskCard.jsx` represents an individual task.
 
-
-
 It handles the presentation of:
-
-
 
 - Task title
 
@@ -252,23 +208,13 @@ It handles the presentation of:
 
 - Delete action
 
-
-
 Keeping the task UI inside a reusable component makes the application easier to maintain and test independently.
-
-
 
 ### Custom Hook
 
-
-
 `useTaskFilters.js` contains the filtering logic for the task list.
 
-
-
 It supports:
-
-
 
 - Searching by task title
 
@@ -282,27 +228,15 @@ It supports:
 
 - Updating filtered results when search or status changes
 
-
-
 The custom hook is tested independently using React Testing Library's `renderHook`.
-
-
 
 Keeping filtering logic inside a custom hook makes the logic easier to maintain and test independently.
 
-
-
 ### API Service
-
-
 
 `tasks.js` provides the task API operations used by the application.
 
-
-
 It handles:
-
-
 
 - Fetching tasks
 
@@ -312,35 +246,19 @@ It handles:
 
 - Deleting tasks
 
-
-
 Separating API communication from the UI keeps `App.jsx` focused on application behavior and user interactions.
-
-
 
 ### Local Data
 
-
-
 `db.json` provides local task data for development using JSON Server.
-
-
 
 ## 🧪 Testing
 
-
-
 TestFlow uses Vitest and React Testing Library to verify application behavior from a user's perspective.
-
-
 
 The test suite focuses on realistic user workflows rather than only testing implementation details.
 
-
-
 ### Dashboard Testing
-
-
 
 - Renders the task dashboard
 
@@ -350,21 +268,13 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Displays the task workboard correctly
 
-
-
 ### Loading State Testing
-
-
 
 - Displays the loading state while tasks are being fetched
 
 - Uses an accessible status element for loading feedback
 
-
-
 ### Task Creation Testing
-
-
 
 - Opens the Add Task modal
 
@@ -386,11 +296,7 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Prevents task creation when the title contains only spaces
 
-
-
 ### Task Update Testing
-
-
 
 - Marks an active task as completed
 
@@ -402,11 +308,7 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Rolls back the UI when the update request fails
 
-
-
 ### Task Deletion Testing
-
-
 
 - Deletes a task
 
@@ -416,11 +318,7 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Rolls back the UI when the delete request fails
 
-
-
 ### Search Testing
-
-
 
 - Searches tasks by title
 
@@ -430,11 +328,7 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Displays the no-results state when no task matches the search
 
-
-
 ### Filter Testing
-
-
 
 - Displays all tasks
 
@@ -446,11 +340,7 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Updates the displayed tasks when the filter changes
 
-
-
 ### API State Testing
-
-
 
 - Loading state
 
@@ -464,19 +354,11 @@ The test suite focuses on realistic user workflows rather than only testing impl
 
 - Rollback behavior after failed API requests
 
-
-
 ### Custom Hook Testing
-
-
 
 The `useTaskFilters` custom hook is tested independently using `renderHook`.
 
-
-
 The tests verify:
-
-
 
 - Returning all tasks when no filters are applied
 
@@ -490,59 +372,31 @@ The tests verify:
 
 - Updating results when filter state changes
 
-
-
 ### Component Testing
-
-
 
 The reusable `TaskCard` and `TaskList` components are tested as part of the application workflow.
 
-
-
 The `TaskCard` component also has a focused snapshot test instead of relying on a large whole-application snapshot.
-
-
 
 This keeps snapshot output focused on the component being tested and makes future UI changes easier to review.
 
-
-
 ## 📊 Test Result
-
-
 
 The final automated test suite contains 38 tests.
 
-
-
 Test Files: 1 passed
-
-
 
 Tests: 38 passed
 
-
-
 All 38 tests passed successfully.
-
-
 
 ## 🧹 Code Quality
 
-
-
 TestFlow uses ESLint and Prettier to maintain consistent and reliable code quality.
-
-
 
 ### ESLint
 
-
-
 ESLint is configured with:
-
-
 
 - ESLint recommended rules
 
@@ -552,189 +406,97 @@ ESLint is configured with:
 
 - React Refresh rules
 
-
-
 The `react-hooks/exhaustive-deps` rule helps detect missing dependencies in `useEffect`.
-
-
 
 During development, a missing `useEffect` dependency was deliberately introduced and ESLint correctly reported the issue.
 
-
-
 The dependency was then fixed and the lint check passed successfully.
-
-
 
 Run ESLint with:
 
-
-
     npm run lint
-
-
 
 ### Prettier
 
-
-
 Prettier is used for consistent code formatting.
 
-
-
 The project uses a `.prettierrc` configuration with:
-
-
 
 - Single quotes
 
 - Semicolons
 
-
-
 Prettier was also verified by deliberately introducing a quote-style mismatch.
-
-
 
 The mismatch was detected using:
 
-
-
     npx prettier --check src/App.jsx
-
-
 
 The formatting was then automatically corrected using:
 
-
-
     npx prettier --write src/App.jsx
-
-
 
 Formatting was verified again successfully using:
 
-
-
     npx prettier --check src/App.jsx
-
-
 
 ## 🏗️ Production Build
 
-
-
 The project uses Vite for production builds.
-
-
 
 The production build was verified successfully using:
 
-
-
     npm run build
-
-
 
 The build generated the production `dist` output successfully.
 
-
-
 ## ▶️ Getting Started
-
-
 
 ### 1. Clone the Repository
 
-
-
     git clone https://github.com/priyanka-srm/test-repo.git
-
-
 
 ### 2. Navigate to the Project
 
-
-
     cd test-repo/testflow
-
-
 
 ### 3. Install Dependencies
 
-
-
     npm install
-
-
 
 ### 4. Start the Development Server
 
-
-
     npm run dev
-
-
 
 The application will be available at:
 
-
-
     http://localhost:5173/
-
-
 
 The development script starts both the Vite development server and JSON Server.
 
-
-
 ### 5. Run the Test Suite
-
-
 
     npm test -- --run
 
-
-
 ### 6. Run ESLint
-
-
 
     npm run lint
 
-
-
 ### 7. Run Production Build
-
-
 
     npm run build
 
-
-
 ## 🔌 API
-
-
 
 TestFlow uses a dedicated API layer for task-related API operations.
 
-
-
 The API logic is maintained in:
-
-
 
     src/data/tasks.js
 
-
-
 The API layer is responsible for communicating with the local JSON Server.
 
-
-
 ### Available Operations
-
-
 
 - `GET /tasks` - Fetch all tasks
 
@@ -744,51 +506,27 @@ The API layer is responsible for communicating with the local JSON Server.
 
 - `DELETE /tasks/:id` - Delete a task
 
-
-
 This keeps network-related logic separate from the main React component.
-
-
 
 ### JSON Server
 
-
-
 The local API data is stored in:
-
-
 
     db.json
 
-
-
 If JSON Server needs to be started separately, run:
-
-
 
     npx json-server --watch db.json --port 3000
 
-
-
 The local API will be available at:
-
-
 
     http://localhost:3000/tasks
 
-
-
 ## ♿ Accessibility
-
-
 
 Accessibility was considered throughout the application.
 
-
-
 The project includes:
-
-
 
 - Semantic HTML elements
 
@@ -814,15 +552,9 @@ The project includes:
 
 - Visible focus states
 
-
-
 The Add Task modal keyboard workflow was also verified.
 
-
-
 The expected Tab order is:
-
-
 
     Title
 
@@ -846,11 +578,7 @@ The expected Tab order is:
 
     Close
 
-
-
 The modal can also be closed using:
-
-
 
 - Close button
 
@@ -858,19 +586,11 @@ The modal can also be closed using:
 
 - Escape key
 
-
-
 ## 🎯 Learning Objectives
-
-
 
 This project was created to strengthen practical React testing and development skills.
 
-
-
 The main learning objectives were:
-
-
 
 - Understand component testing
 
@@ -917,15 +637,9 @@ The main learning objectives were:
 - Understand lazy loading with `React.lazy` and `Suspense`
 - Recognize modern React APIs and Server Components concepts
 
-
-
 ## 💡 Key Concepts Practiced
 
-
-
 Through TestFlow, the following React and development concepts were practiced:
-
-
 
 - React state management
 
@@ -976,19 +690,11 @@ Through TestFlow, the following React and development concepts were practiced:
 - `React.lazy` and `Suspense`
 - React 19 Actions, `use()`, and Server Components awareness
 
-
-
 ## 🖥️ Browser Verification
-
-
 
 Before completing the project, the application was manually verified in the browser.
 
-
-
 The following workflows were tested successfully:
-
-
 
 - Dashboard loading
 
@@ -1010,19 +716,11 @@ The following workflows were tested successfully:
 
 - Page refresh
 
-
-
 Browser Verification: 9/9 Passed
-
-
 
 ## 📸 Application Workflow
 
-
-
 The main TestFlow workflow includes:
-
-
 
     Open TestFlow
 
@@ -1054,15 +752,9 @@ The main TestFlow workflow includes:
 
     Handle Success / Error / Rollback
 
-
-
 ## 🧪 Testing Workflow
 
-
-
 The testing workflow followed during development was:
-
-
 
     Build Feature
 
@@ -1110,54 +802,63 @@ The testing workflow followed during development was:
 
     Git Push
 
-
-
 ## 🧠 Phase 17 — Advanced Patterns, TypeScript & Modern React Awareness
 
 Phase 17 extends the existing TestFlow project with focused examples of reusable React patterns, TypeScript, lazy loading, and awareness of modern React APIs.
 
 ### 17.1 — Higher-Order Components (HOC)
+
 - Created a reusable `withLoading` higher-order component.
 - Applied the HOC to example components such as `UserProfile` and `ProductList`.
 - Added tests for the loading wrapper behavior.
 
 ### 17.2 — Render Props
+
 - Practiced sharing component behavior through a render-prop / function-children API.
 - Built a `MouseTracker` example and tested it.
 
 ### 17.3 — Compound Components
+
 - Built an Accordion using a compound-component API and Context.
 - Coordinated the Accordion's child components and tested its behavior.
 
 ### 17.4 — Controlled vs Uncontrolled APIs
+
 - Built a reusable `Select` component that supports controlled and uncontrolled usage.
 - Added tests for the supported behavior and a demo component.
 
 ### 17.5 — TypeScript Fundamentals for React
+
 - Added TypeScript examples for component props, state, and event handlers.
 - Verified that an intentionally incorrect prop type is caught by the TypeScript compiler, then restored the correct type.
 
 ### 17.6 — Generic Components
+
 - Built a reusable `GenericList<T>` component with typed items, keys, and render callbacks.
 - Demonstrated reuse with different item types.
 
 ### 17.7 — TypeScript Trade-offs
+
 - Documented when TypeScript's type checking and editor support are useful, alongside the extra setup and typing overhead.
 - Considered when TypeScript or JavaScript is a sensible choice for a project.
 
 ### 17.8 — Suspense and Lazy Loading
+
 - Practiced `React.lazy` with `Suspense` to display a fallback while a component's code loads.
 - Added tests for the lazy-loading demo.
 
 ### 17.9 — React 19 Awareness
+
 - Reviewed React Actions and the `use()` API at an awareness level.
 - Focused on recognizing their purpose rather than building a full application around them.
 
 ### 17.10 — Server Components Awareness
+
 - Reviewed the difference between Server Components and Client Components, including the role of the `"use client"` directive in supported frameworks.
 - This was conceptual learning; the Vite project was not converted into a Server Components framework setup.
 
 ### Phase 17 Learning Outcomes
+
 - Recognize the trade-offs between HOCs, render props, and compound components.
 - Design a reusable component API for controlled and uncontrolled use.
 - Type React props, state, events, and generic data with TypeScript.
@@ -1168,19 +869,11 @@ Phase 17 extends the existing TestFlow project with focused examples of reusable
 
 ## 📌 Project Status
 
-
-
 **Completed**
-
-
 
 The project has been implemented, tested, manually verified, and prepared with basic production-readiness tooling.
 
-
-
 ### Final Verification
-
-
 
 - React application: Completed
 
