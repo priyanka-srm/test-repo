@@ -1,11 +1,12 @@
 import {
   act,
-  render,
+  render as testingLibraryRender,
   renderHook,
   screen,
   waitFor,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import App from "./App";
@@ -19,6 +20,10 @@ vi.mock("./data/tasks", () => ({
   updateTask: vi.fn(),
   deleteTask: vi.fn(),
 }));
+
+function render(ui, options) {
+  return testingLibraryRender(<MemoryRouter>{ui}</MemoryRouter>, options);
+}
 
 const mockTasks = [
   {
@@ -807,6 +812,18 @@ describe("TestFlow task management", () => {
     expect(screen.getByText("Task title is required.")).toBeInTheDocument();
 
     expect(createTask).not.toHaveBeenCalled();
+  });
+
+  test("renders a link to the task detail page", () => {
+    render(
+      <TaskCard task={mockTasks[0]} onToggle={vi.fn()} onDelete={vi.fn()} />,
+    );
+
+    const detailsLink = screen.getByRole("link", {
+      name: "View details for Review Vitest configuration",
+    });
+
+    expect(detailsLink).toHaveAttribute("href", "/tasks/1");
   });
 
   test("renders the TaskCard snapshot", () => {

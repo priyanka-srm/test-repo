@@ -43,6 +43,13 @@ exports[`TestFlow task management > renders the TaskCard snapshot 1`] = `
     <div
       class="task-actions"
     >
+      <a
+        aria-label="View details for Write user interaction tests"
+        data-discover="true"
+        href="/tasks/2"
+      >
+        View details
+      </a>
       <button
         aria-label="Mark Write user interaction tests as complete"
         type="button"

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function TaskCard({ task, onToggle, onDelete }) {
   const priorityLabel =
     task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
@@ -36,6 +38,13 @@ function TaskCard({ task, onToggle, onDelete }) {
         </span>
 
         <div className="task-actions">
+          <Link
+            to={`/tasks/${encodeURIComponent(task.id)}`}
+            aria-label={`View details for ${task.title}`}
+          >
+            View details
+          </Link>
+
           <button
             type="button"
             onClick={() => onToggle(task)}
