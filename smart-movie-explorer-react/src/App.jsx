@@ -1,8 +1,22 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 
 const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
+const FAVORITES_KEY = "smart-movie-explorer-favorites";
+
+function loadFavorites() {
+  try {
+    const savedFavorites = localStorage.getItem(FAVORITES_KEY);
+    const parsedFavorites = savedFavorites
+      ? JSON.parse(savedFavorites)
+      : [];
+
+    return Array.isArray(parsedFavorites) ? parsedFavorites : [];
+  } catch {
+    return [];
+  }
+}
 
 function App() {
   const [query, setQuery] = useState("");
@@ -10,6 +24,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
+
+  const [favorites, setFavorites] = useState(loadFavorites);
 
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movieDetails, setMovieDetails] = useState(null);
@@ -20,7 +36,15 @@ function App() {
   const detailsControllerRef = useRef(null);
   const closeButtonRef = useRef(null);
 
-  function closeDetails() {
+  useEffect(() => {
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    } catch {
+      // Favorites remain available in React state if storage is unavailable.
+    }
+  }, [favorites]);
+
+  const closeDetails = useCallback(() => {
     detailsControllerRef.current?.abort();
     detailsControllerRef.current = null;
 
@@ -28,7 +52,7 @@ function App() {
     setMovieDetails(null);
     setDetailsError("");
     setDetailsLoading(false);
-  }
+  }, []);
 
   useEffect(() => {
     if (!selectedMovie) return;
@@ -45,7 +69,27 @@ function App() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedMovie]);
+  }, [selectedMovie, closeDetails]);
+
+  function isFavorite(movieId) {
+    return favorites.some((movie) => movie.imdbID === movieId);
+  }
+
+  function toggleFavorite(movie) {
+    setFavorites((currentFavorites) => {
+      const alreadySaved = currentFavorites.some(
+        (favorite) => favorite.imdbID === movie.imdbID,
+      );
+
+      if (alreadySaved) {
+        return currentFavorites.filter(
+          (favorite) => favorite.imdbID !== movie.imdbID,
+        );
+      }
+
+      return [...currentFavorites, movie];
+    });
+  }
 
   async function handleSearch(event) {
     event.preventDefault();
@@ -173,6 +217,56 @@ function App() {
     }
   }
 
+  function renderMovieCard(movie) {
+    const saved = isFavorite(movie.imdbID);
+
+    return (
+      <article className="movie-card-wrapper" key={movie.imdbID}>
+        <button
+          className="movie-card movie-card-button"
+          type="button"
+          onClick={() => handleMovieClick(movie)}
+          aria-label={`View details for ${movie.Title}`}
+        >
+          {movie.Poster && movie.Poster !== "N/A" ? (
+            <img
+              className="movie-poster"
+              src={movie.Poster}
+              alt={`${movie.Title} poster`}
+              loading="lazy"
+            />
+          ) : (
+            <div className="poster-placeholder">
+              <span aria-hidden="true">🎞️</span>
+              <span>Poster unavailable</span>
+            </div>
+          )}
+
+          <div className="movie-info">
+            <h3>{movie.Title}</h3>
+            <p>{movie.Year || "Year unavailable"}</p>
+            <span className="movie-card-link">View details →</span>
+          </div>
+        </button>
+
+        <button
+          className={`favorite-button${saved ? " is-favorite" : ""}`}
+          type="button"
+          onClick={() => toggleFavorite(movie)}
+          aria-pressed={saved}
+          aria-label={
+            saved
+              ? `Remove ${movie.Title} from favorites`
+              : `Add ${movie.Title} to favorites`
+          }
+        >
+          <span aria-hidden="true">{saved ? "♥" : "♡"}</span>
+          {saved ? "Remove favorite" : "Add to favorites"}
+        </button>
+      </article>
+    );
+  }
+
   return (
     <div className="app">
       <header className="site-header">
@@ -250,35 +344,7 @@ function App() {
               </div>
 
               <div className="movie-grid">
-                {movies.map((movie) => (
-                  <button
-                    className="movie-card movie-card-button"
-                    key={movie.imdbID}
-                    type="button"
-                    onClick={() => handleMovieClick(movie)}
-                    aria-label={`View details for ${movie.Title}`}
-                  >
-                    {movie.Poster && movie.Poster !== "N/A" ? (
-                      <img
-                        className="movie-poster"
-                        src={movie.Poster}
-                        alt={`${movie.Title} poster`}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="poster-placeholder">
-                        <span aria-hidden="true">🎞️</span>
-                        <span>Poster unavailable</span>
-                      </div>
-                    )}
-
-                    <div className="movie-info">
-                      <h3>{movie.Title}</h3>
-                      <p>{movie.Year || "Year unavailable"}</p>
-                      <span className="movie-card-link">View details →</span>
-                    </div>
-                  </button>
-                ))}
+                {movies.map(renderMovieCard)}
               </div>
             </>
           )}
@@ -304,12 +370,38 @@ function App() {
           )}
         </section>
 
-        <section className="favorites-section">
+        <section className="favorites-section" aria-labelledby="favorites-title">
           <p className="eyebrow">YOUR COLLECTION</p>
-          <h2>Favorites</h2>
-          <p>
-            Your favorite movies collection is coming soon. Stay tuned!
-          </p>
+
+          <div className="section-heading">
+            <div>
+              <h2 id="favorites-title">Favorites ❤️</h2>
+              <p>
+                Your personally saved movie collection.
+              </p>
+            </div>
+
+            <span className="result-count">
+              {favorites.length} saved
+            </span>
+          </div>
+
+          {favorites.length > 0 ? (
+            <div className="movie-grid">
+              {favorites.map(renderMovieCard)}
+            </div>
+          ) : (
+            <div className="empty-state favorites-empty-state">
+              <span className="empty-icon" aria-hidden="true">
+                ♡
+              </span>
+              <h3>No favorites yet</h3>
+              <p>
+                Search for movies and select “Add to favorites” to save them
+                here.
+              </p>
+            </div>
+          )}
         </section>
       </main>
 
@@ -379,7 +471,6 @@ function App() {
 
                 <div className="modal-details">
                   <p className="eyebrow">MOVIE DETAILS</p>
-
                   <h2 id="modal-title">{movieDetails.Title}</h2>
 
                   <div className="modal-meta">
@@ -444,6 +535,22 @@ function App() {
                       View on IMDb ↗
                     </a>
                   )}
+
+                  <button
+                    className={`favorite-button modal-favorite-button${
+                      isFavorite(movieDetails.imdbID) ? " is-favorite" : ""
+                    }`}
+                    type="button"
+                    onClick={() => toggleFavorite(movieDetails)}
+                    aria-pressed={isFavorite(movieDetails.imdbID)}
+                  >
+                    <span aria-hidden="true">
+                      {isFavorite(movieDetails.imdbID) ? "♥" : "♡"}
+                    </span>
+                    {isFavorite(movieDetails.imdbID)
+                      ? "Remove from favorites"
+                      : "Add to favorites"}
+                  </button>
                 </div>
               </div>
             )}
