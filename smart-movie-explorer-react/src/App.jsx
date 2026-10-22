@@ -18,6 +18,41 @@ function loadFavorites() {
   }
 }
 
+
+function MoviePoster({ src, title, className = "movie-poster" }) {
+  const [failedSrc, setFailedSrc] = useState("");
+
+  const isModalPoster = className === "modal-poster";
+  const imageFailed = failedSrc === src;
+
+  if (!src || src === "N/A" || imageFailed) {
+    return (
+      <div
+        className={
+          isModalPoster
+            ? "poster-placeholder modal-poster"
+            : "poster-placeholder"
+        }
+        role="img"
+        aria-label={`Poster unavailable for ${title}`}
+      >
+        <span aria-hidden="true">🎞️</span>
+        <span>Poster unavailable</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      className={className}
+      src={src}
+      alt={`${title} poster`}
+      loading="lazy"
+      onError={() => setFailedSrc(src)}
+    />
+  );
+}
+
 function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
@@ -97,6 +132,8 @@ function App() {
     const searchTerm = query.trim();
 
     if (!searchTerm) {
+      searchControllerRef.current?.abort();
+      setLoading(false);
       setError("Please enter a movie name to search.");
       setMovies([]);
       setHasSearched(true);
@@ -107,6 +144,20 @@ function App() {
       setError(
         "OMDb API key is missing. Add VITE_OMDB_API_KEY to your .env.local file and restart the development server.",
       );
+      setMovies([]);
+      setHasSearched(true);
+      return;
+    }
+
+    // Allow searches such as "Dragon 2025" to include a release year.
+    const yearMatch = searchTerm.match(/\b(19\d{2}|20\d{2})\b/);
+    const year = yearMatch?.[0];
+    const title = year
+      ? searchTerm.replace(yearMatch[0], "").trim()
+      : searchTerm;
+
+    if (!title) {
+      setError("Please enter a movie title along with the year.");
       setMovies([]);
       setHasSearched(true);
       return;
@@ -125,9 +176,13 @@ function App() {
     try {
       const params = new URLSearchParams({
         apikey: API_KEY,
-        s: searchTerm,
+        s: title,
         type: "movie",
       });
+
+      if (year) {
+        params.set("y", year);
+      }
 
       const response = await fetch(
         `https://www.omdbapi.com/?${params.toString()}`,
@@ -135,18 +190,37 @@ function App() {
       );
 
       if (!response.ok) {
-        throw new Error("Unable to connect to the movie service.");
+        throw new Error(
+          "Unable to connect to the movie service. Please try again.",
+        );
       }
 
       const data = await response.json();
 
       if (data.Response === "False") {
-        throw new Error(data.Error || "No movies found. Try another title.");
+        if (data.Error === "Invalid API key!") {
+          throw new Error(
+            "The OMDb API key is invalid. Please check your .env.local file.",
+          );
+        }
+
+        if (data.Error?.toLowerCase().includes("limit")) {
+          throw new Error(
+            "The OMDb daily request limit may have been reached. Please try again later.",
+          );
+        }
+
+        setMovies([]);
+        setError(
+          `No results found for "${searchTerm}" in OMDb. Try the movie's English title or add its release year. Some Tamil movies may not be listed in this database.`,
+        );
+        return;
       }
 
-      setMovies(data.Search || []);
+      setMovies(Array.isArray(data.Search) ? data.Search : []);
     } catch (err) {
       if (err.name !== "AbortError") {
+        setMovies([]);
         setError(err.message || "Something went wrong. Please try again.");
       }
     } finally {
@@ -188,7 +262,7 @@ function App() {
       );
 
       if (!response.ok) {
-        throw new Error("Unable to load movie details.");
+        throw new Error("Unable to load movie details. Please try again.");
       }
 
       const data = await response.json();
@@ -228,19 +302,7 @@ function App() {
           onClick={() => handleMovieClick(movie)}
           aria-label={`View details for ${movie.Title}`}
         >
-          {movie.Poster && movie.Poster !== "N/A" ? (
-            <img
-              className="movie-poster"
-              src={movie.Poster}
-              alt={`${movie.Title} poster`}
-              loading="lazy"
-            />
-          ) : (
-            <div className="poster-placeholder">
-              <span aria-hidden="true">🎞️</span>
-              <span>Poster unavailable</span>
-            </div>
-          )}
+          <MoviePoster src={movie.Poster} title={movie.Title} />
 
           <div className="movie-info">
             <h3>{movie.Title}</h3>
@@ -305,7 +367,7 @@ function App() {
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search a movie, e.g. Interstellar..."
+              placeholder="Search a movie, e.g. Interstellar or Dragon 2025..."
               autoComplete="off"
             />
 
@@ -315,7 +377,8 @@ function App() {
           </form>
 
           <p className="search-hint">
-            Try a title like Inception, Interstellar, or The Dark Knight.
+            Try a movie title such as Inception, Interstellar, or a title with
+            its release year.
           </p>
         </section>
 
@@ -376,14 +439,10 @@ function App() {
           <div className="section-heading">
             <div>
               <h2 id="favorites-title">Favorites ❤️</h2>
-              <p>
-                Your personally saved movie collection.
-              </p>
+              <p>Your personally saved movie collection.</p>
             </div>
 
-            <span className="result-count">
-              {favorites.length} saved
-            </span>
+            <span className="result-count">{favorites.length} saved</span>
           </div>
 
           {favorites.length > 0 ? (
@@ -454,19 +513,11 @@ function App() {
             {!detailsLoading && movieDetails && (
               <div className="modal-content">
                 <div className="modal-poster-container">
-                  {movieDetails.Poster &&
-                  movieDetails.Poster !== "N/A" ? (
-                    <img
-                      className="modal-poster"
-                      src={movieDetails.Poster}
-                      alt={`${movieDetails.Title} poster`}
-                    />
-                  ) : (
-                    <div className="poster-placeholder modal-poster">
-                      <span aria-hidden="true">🎞️</span>
-                      <span>Poster unavailable</span>
-                    </div>
-                  )}
+                  <MoviePoster
+                    src={movieDetails.Poster}
+                    title={movieDetails.Title}
+                    className="modal-poster"
+                  />
                 </div>
 
                 <div className="modal-details">
@@ -494,8 +545,7 @@ function App() {
 
                   <h3>Story</h3>
                   <p id="modal-description" className="modal-plot">
-                    {movieDetails.Plot &&
-                    movieDetails.Plot !== "N/A"
+                    {movieDetails.Plot && movieDetails.Plot !== "N/A"
                       ? movieDetails.Plot
                       : "No plot description is available."}
                   </p>
