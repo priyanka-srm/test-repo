@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useId, useState } from "react";
 
 const AccordionContext = createContext(null);
 const AccordionItemContext = createContext(null);
@@ -8,6 +8,16 @@ function useAccordion() {
 
   if (!context) {
     throw new Error("Accordion components must be used inside Accordion.");
+  }
+
+  return context;
+}
+
+function useAccordionItem(componentName) {
+  const context = useContext(AccordionItemContext);
+
+  if (!context) {
+    throw new Error(`${componentName} must be used inside Accordion.Item.`);
   }
 
   return context;
@@ -29,7 +39,9 @@ function Accordion({ children }) {
 
 function Item({ value, children }) {
   const { openItem, toggleItem } = useAccordion();
+  const generatedId = useId();
   const isOpen = openItem === value;
+  const panelId = `panel-${generatedId}`;
 
   return (
     <AccordionItemContext.Provider
@@ -37,6 +49,7 @@ function Item({ value, children }) {
         value,
         isOpen,
         toggle: () => toggleItem(value),
+        panelId,
       }}
     >
       <div data-testid={`accordion-item-${value}`}>{children}</div>
@@ -45,18 +58,14 @@ function Item({ value, children }) {
 }
 
 function Header({ children }) {
-  const { value, isOpen, toggle } = useContext(AccordionItemContext);
-
-  if (value === undefined) {
-    throw new Error("Accordion.Header must be inside Accordion.Item.");
-  }
+  const { isOpen, toggle, panelId } = useAccordionItem("Accordion.Header");
 
   return (
     <h3>
       <button
         type="button"
         aria-expanded={isOpen}
-        aria-controls={`panel-${value}`}
+        aria-controls={panelId}
         onClick={toggle}
       >
         {children}
@@ -66,14 +75,10 @@ function Header({ children }) {
 }
 
 function Panel({ children }) {
-  const { value, isOpen } = useContext(AccordionItemContext);
-
-  if (value === undefined) {
-    throw new Error("Accordion.Panel must be inside Accordion.Item.");
-  }
+  const { isOpen, panelId } = useAccordionItem("Accordion.Panel");
 
   return (
-    <div id={`panel-${value}`} hidden={!isOpen}>
+    <div id={panelId} hidden={!isOpen}>
       {children}
     </div>
   );

@@ -57,4 +57,16 @@ describe("Accordion compound components", () => {
     expect(screen.getByText("First panel content")).not.toBeVisible();
     expect(screen.getByText("Second panel content")).toBeVisible();
   });
+
+  it("throws a helpful error when Header is used outside Accordion.Item", () => {
+    expect(() =>
+      render(<Accordion.Header>Orphan header</Accordion.Header>),
+    ).toThrow("Accordion.Header must be used inside Accordion.Item.");
+  });
+
+  it("throws a helpful error when Panel is used outside Accordion.Item", () => {
+    expect(() =>
+      render(<Accordion.Panel>Orphan panel</Accordion.Panel>),
+    ).toThrow("Accordion.Panel must be used inside Accordion.Item.");
+  });
 });
