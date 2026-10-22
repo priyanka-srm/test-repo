@@ -1,3 +1,4 @@
+
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
@@ -20,10 +21,16 @@ function ErrorFallback({ error, resetErrorBoundary }) {
   );
 }
 
-export default function AppErrorBoundary({ children }) {
+export default function AppErrorBoundary({
+  children,
+  onReset,
+  resetKeys,
+}) {
   return (
     <ReactErrorBoundary
       FallbackComponent={ErrorFallback}
+      onReset={onReset}
+      resetKeys={resetKeys}
       onError={(error, info) => {
         if (import.meta.env.DEV) {
           console.error("Application render error:", error, info);
