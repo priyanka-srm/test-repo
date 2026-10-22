@@ -4,28 +4,38 @@ import "./App.css";
 
 const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
 const FAVORITES_KEY = "smart-movie-explorer-favorites";
+const RECENT_SEARCHES_KEY = "smart-movie-explorer-recent-searches";
+const MAX_RECENT_SEARCHES = 6;
 
-function loadFavorites() {
+function loadFromStorage(key, fallback) {
   try {
-    const savedFavorites = localStorage.getItem(FAVORITES_KEY);
-    const parsedFavorites = savedFavorites
-      ? JSON.parse(savedFavorites)
-      : [];
-
-    return Array.isArray(parsedFavorites) ? parsedFavorites : [];
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : fallback;
   } catch {
-    return [];
+    return fallback;
   }
 }
 
+function loadFavorites() {
+  const saved = loadFromStorage(FAVORITES_KEY, []);
+  return Array.isArray(saved) ? saved : [];
+}
+
+function loadRecentSearches() {
+  const saved = loadFromStorage(RECENT_SEARCHES_KEY, []);
+
+  return Array.isArray(saved)
+    ? saved.filter(
+        (item) => typeof item === "string" && item.trim().length > 0,
+      ).slice(0, MAX_RECENT_SEARCHES)
+    : [];
+}
 
 function MoviePoster({ src, title, className = "movie-poster" }) {
   const [failedSrc, setFailedSrc] = useState("");
-
   const isModalPoster = className === "modal-poster";
-  const imageFailed = failedSrc === src;
 
-  if (!src || src === "N/A" || imageFailed) {
+  if (!src || src === "N/A" || failedSrc === src) {
     return (
       <div
         className={
@@ -61,6 +71,10 @@ function App() {
   const [hasSearched, setHasSearched] = useState(false);
 
   const [favorites, setFavorites] = useState(loadFavorites);
+  const [recentSearches, setRecentSearches] = useState(
+    loadRecentSearches,
+  );
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
 
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movieDetails, setMovieDetails] = useState(null);
@@ -70,6 +84,7 @@ function App() {
   const searchControllerRef = useRef(null);
   const detailsControllerRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const searchAreaRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -78,6 +93,34 @@ function App() {
       // Favorites remain available in React state if storage is unavailable.
     }
   }, [favorites]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        RECENT_SEARCHES_KEY,
+        JSON.stringify(recentSearches),
+      );
+    } catch {
+      // Recent searches remain available in React state for this session.
+    }
+  }, [recentSearches]);
+
+  useEffect(() => {
+    function handleOutsideClick(event) {
+      if (
+        searchAreaRef.current &&
+        !searchAreaRef.current.contains(event.target)
+      ) {
+        setShowRecentSearches(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsideClick);
+    };
+  }, []);
 
   const closeDetails = useCallback(() => {
     detailsControllerRef.current?.abort();
@@ -126,10 +169,20 @@ function App() {
     });
   }
 
-  async function handleSearch(event) {
-    event.preventDefault();
+  function rememberSearch(searchTerm) {
+    setRecentSearches((currentSearches) => [
+      searchTerm,
+      ...currentSearches.filter(
+        (item) => item.toLowerCase() !== searchTerm.toLowerCase(),
+      ),
+    ].slice(0, MAX_RECENT_SEARCHES));
+  }
 
-    const searchTerm = query.trim();
+  async function handleSearch(event, searchOverride) {
+    event?.preventDefault();
+
+    const searchTerm = (searchOverride ?? query).trim();
+    setShowRecentSearches(false);
 
     if (!searchTerm) {
       searchControllerRef.current?.abort();
@@ -149,7 +202,6 @@ function App() {
       return;
     }
 
-    // Allow searches such as "Dragon 2025" to include a release year.
     const yearMatch = searchTerm.match(/\b(19\d{2}|20\d{2})\b/);
     const year = yearMatch?.[0];
     const title = year
@@ -162,6 +214,9 @@ function App() {
       setHasSearched(true);
       return;
     }
+
+    rememberSearch(searchTerm);
+    setQuery(searchTerm);
 
     searchControllerRef.current?.abort();
 
@@ -228,6 +283,17 @@ function App() {
         setLoading(false);
       }
     }
+  }
+
+  function handleRecentSearchClick(searchTerm) {
+    setQuery(searchTerm);
+    setShowRecentSearches(false);
+    handleSearch(null, searchTerm);
+  }
+
+  function clearRecentSearches() {
+    setRecentSearches([]);
+    setShowRecentSearches(false);
   }
 
   async function handleMovieClick(movie) {
@@ -329,6 +395,12 @@ function App() {
     );
   }
 
+  const filteredRecentSearches = recentSearches.filter(
+    (item) =>
+      !query.trim() ||
+      item.toLowerCase().includes(query.trim().toLowerCase()),
+  );
+
   return (
     <div className="app">
       <header className="site-header">
@@ -357,24 +429,77 @@ function App() {
             watching.
           </p>
 
-          <form className="search-form" onSubmit={handleSearch}>
-            <label className="sr-only" htmlFor="movie-search">
-              Search for a movie
-            </label>
+          <div className="search-area" ref={searchAreaRef}>
+            <form className="search-form" onSubmit={handleSearch}>
+              <label className="sr-only" htmlFor="movie-search">
+                Search for a movie
+              </label>
 
-            <input
-              id="movie-search"
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search a movie, e.g. Interstellar or Dragon 2025..."
-              autoComplete="off"
-            />
+              <input
+                id="movie-search"
+                type="search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setShowRecentSearches(true);
+                }}
+                onFocus={() => setShowRecentSearches(true)}
+                placeholder="Search a movie, e.g. Interstellar or Dragon 2025..."
+                autoComplete="off"
+                aria-expanded={
+                  showRecentSearches && filteredRecentSearches.length > 0
+                }
+                aria-controls="recent-searches-list"
+              />
 
-            <button type="submit" disabled={loading}>
-              {loading ? "Searching..." : "Search movies"}
-            </button>
-          </form>
+              <button type="submit" disabled={loading}>
+                {loading ? "Searching..." : "Search movies"}
+              </button>
+            </form>
+
+            {showRecentSearches && recentSearches.length > 0 && (
+              <div
+                className="recent-searches-dropdown"
+                id="recent-searches-list"
+                aria-label="Recent movie searches"
+              >
+                <div className="recent-searches-heading">
+                  <span>
+                    <span aria-hidden="true">🕘</span> Recent searches
+                  </span>
+
+                  <button
+                    type="button"
+                    className="clear-recent-searches"
+                    onClick={clearRecentSearches}
+                  >
+                    Clear all
+                  </button>
+                </div>
+
+                {filteredRecentSearches.length > 0 ? (
+                  <ul className="recent-searches-list">
+                    {filteredRecentSearches.map((item) => (
+                      <li key={item}>
+                        <button
+                          type="button"
+                          className="recent-search-item"
+                          onClick={() => handleRecentSearchClick(item)}
+                        >
+                          <span aria-hidden="true">↺</span>
+                          <span>{item}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="recent-searches-empty">
+                    No matching recent searches.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
 
           <p className="search-hint">
             Try a movie title such as Inception, Interstellar, or a title with
@@ -433,7 +558,10 @@ function App() {
           )}
         </section>
 
-        <section className="favorites-section" aria-labelledby="favorites-title">
+        <section
+          className="favorites-section"
+          aria-labelledby="favorites-title"
+        >
           <p className="eyebrow">YOUR COLLECTION</p>
 
           <div className="section-heading">

@@ -126,12 +126,20 @@ a {
   line-height: 1.8;
 }
 
+/* Search form and recent search dropdown */
+.search-area {
+  position: relative;
+  width: min(100%, 650px);
+  margin: 0 auto;
+  z-index: 5;
+}
+
 .search-form {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: min(100%, 650px);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: 7px;
   border: 1px solid #38334f;
   border-radius: 12px;
@@ -178,6 +186,90 @@ a {
 .search-form button:disabled {
   cursor: wait;
   opacity: 0.7;
+}
+
+.recent-searches-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  z-index: 50;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1f2937;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 12%);
+  text-align: left;
+}
+
+.recent-searches-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 6px 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.clear-recent-searches {
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.clear-recent-searches:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.recent-searches-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recent-search-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.recent-search-item:hover,
+.recent-search-item:focus-visible {
+  background: #f3f4f6;
+  outline: none;
+}
+
+.recent-search-item > span:first-child {
+  color: #6b7280;
+}
+
+.recent-searches-empty {
+  margin: 4px 6px;
+  color: #6b7280;
+  font-size: 0.88rem;
 }
 
 .search-hint {
@@ -457,7 +549,6 @@ a {
 }
 
 /* Movie details modal */
-
 .modal-backdrop {
   position: fixed;
   z-index: 1000;
@@ -687,6 +778,16 @@ a {
 
   .site-footer {
     padding: 22px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .recent-searches-dropdown {
+    padding: 8px;
+  }
+
+  .recent-search-item {
+    padding: 12px 8px;
   }
 }
 
